@@ -269,10 +269,10 @@ if (isset($_POST['userLogin'])) {
         } elseif ($tester) {
             if ($userPassword == $tester['password']) {
                 // Login as Tester/User
-                $_SESSION['userRole'] = $tester['role_id'];
+               
                 $_SESSION['userName'] = $tester['name'];
                 $_SESSION['userEmail'] = $tester['email'];
-                $_SESSION['userId'] = $tester['id'];
+                
                 echo "<script>alert('User Login');location.assign('addProduct.php')</script>";
             } else {
                 $userPasswordErr = "Incorrect Password for User";

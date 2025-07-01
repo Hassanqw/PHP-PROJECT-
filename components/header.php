@@ -1188,17 +1188,17 @@ if (isset($_SESSION['adminEmail'])) {
                                     </a>
                                     <ul      >
                                         <li>
-                                            <a href="index.html" >
+                                            <a href="index.php" >
                                                 <i class="metismenu-icon"></i>Analytics
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="dashboards-commerce.html" >
+                                            <a href="dashboards-commerce.php" >
                                                 <i class="metismenu-icon"></i>Commerce
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="dashboards-sales.html" >
+                                            <a href="dashboards-sales.php" >
                                                 <i class="metismenu-icon">
                                                 </i>Sales
                                             </a>
@@ -1210,19 +1210,19 @@ if (isset($_SESSION['adminEmail'])) {
                                             </a>
                                             <ul  >
                                                 <li>
-                                                    <a href="dashboards-minimal-1.html" >
+                                                    <a href="dashboards-minimal-1.php" >
                                                         <i class="metismenu-icon"></i>Variation 1
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="dashboards-minimal-2.html" >
+                                                    <a href="dashboards-minimal-2.php" >
                                                         <i class="metismenu-icon"></i>Variation 2
                                                     </a>
                                                 </li>
                                             </ul>
                                         </li>
                                         <li>
-                                            <a href="dashboards-crm.html" >
+                                            <a href="dashboards-crm.php" >
                                                 <i class="metismenu-icon"></i> CRM
                                             </a>
                                         </li>
@@ -1230,7 +1230,7 @@ if (isset($_SESSION['adminEmail'])) {
                                 </li>
                                
                                         <li>
-                                            <a href="pages-login.html" >
+                                            <a href="pages-login.php" >
                                                 <i class="metismenu-icon"></i> Login
                                             </a>
                                         </li>
@@ -1242,6 +1242,11 @@ if (isset($_SESSION['adminEmail'])) {
                                         <li>
                                             <a href="add_product_types.php" >
                                                 <i class="metismenu-icon"></i>Add Product Type
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="re_manufacture.php" >
+                                                <i class="metismenu-icon"></i>Re Manufacture
                                             </a>
                                         </li>
                                         <li>
@@ -1275,22 +1280,22 @@ if (isset($_SESSION['adminEmail'])) {
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="pages-register.html" >
+                                            <a href="pages-register.php" >
                                                 <i class="metismenu-icon"></i>Register
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="pages-register-boxed.html" >
+                                            <a href="pages-register-boxed.php" >
                                                 <i class="metismenu-icon"></i>Register Boxed
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="pages-forgot-password.html" >
+                                            <a href="pages-forgot-password.php" >
                                                 <i class="metismenu-icon"></i>Forgot Password
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="pages-forgot-password-boxed.html" >
+                                            <a href="pages-forgot-password-boxed.php" >
                                                 <i class="metismenu-icon"></i>Forgot Password Boxed
                                             </a>
                                         </li>

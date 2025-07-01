@@ -2,14 +2,15 @@
 include("php/query.php");
 include("components/header.php");
 
-// Step 1: Get product IDs which have passed lab_test
+// Step 1: Get product IDs which have passed lab_test and not already in cpri_tests
 $passedProductIds = $pdo->query("
     SELECT DISTINCT product_id 
     FROM lab_test 
     WHERE result = 'Pass'
+    AND product_id NOT IN (SELECT DISTINCT product_id FROM cpri_tests)
 ")->fetchAll(PDO::FETCH_COLUMN);
 
-// Step 2: Get products which are passed
+// Step 2: Get products which are passed and not tested in cpri_tests
 $passedProducts = [];
 if (!empty($passedProductIds)) {
     $placeholders = implode(',', array_fill(0, count($passedProductIds), '?'));
@@ -43,12 +44,23 @@ if (isset($_POST['add_cpri_test'])) {
         $errors[] = "Product is required.";
     }
 
+    // Validate dates format (optional, but recommended)
+    $dateFields = ['submission_date' => $submission_date, 'test_date' => $test_date, 'decision_date' => $decision_date];
+    foreach ($dateFields as $field => $value) {
+        if ($value && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            $errors[] = ucfirst(str_replace('_', ' ', $field)) . " is not a valid date.";
+        }
+    }
+
     // Handle file upload if any
     if (isset($_FILES['uploaded_report']) && $_FILES['uploaded_report']['error'] !== UPLOAD_ERR_NO_FILE) {
         $file = $_FILES['uploaded_report'];
         if ($file['error'] === UPLOAD_ERR_OK) {
             $allowed_types = ['application/pdf', 'image/png', 'image/jpeg'];
-            if (!in_array($file['type'], $allowed_types)) {
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mime = $finfo->file($file['tmp_name']);
+
+            if (!in_array($mime, $allowed_types)) {
                 $errors[] = "Uploaded file must be PDF, PNG, or JPG.";
             } else {
                 $upload_dir = __DIR__ . '/uploads/reports/';
@@ -56,7 +68,8 @@ if (isset($_POST['add_cpri_test'])) {
                     mkdir($upload_dir, 0755, true);
                 }
 
-                $filename = uniqid('report_') . '_' . basename($file['name']);
+                $safeName = preg_replace("/[^a-zA-Z0-9_\.-]/", '_', basename($file['name']));
+                $filename = uniqid('report_') . '_' . $safeName;
                 $target_path = $upload_dir . $filename;
 
                 if (move_uploaded_file($file['tmp_name'], $target_path)) {
@@ -109,8 +122,9 @@ if (isset($_POST['add_cpri_test'])) {
 <style>
 .container {
     width: 700px;
-    margin-top: -500px;
-    margin-left: 300px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>
 
@@ -129,7 +143,7 @@ if (isset($_POST['add_cpri_test'])) {
 
     <form method="POST" enctype="multipart/form-data">
         
-        <!-- Product (Passed in lab_test) -->
+        <!-- Product (Passed in lab_test and not tested in cpri_tests) -->
         <div class="mb-3">
             <label class="form-label">Product</label>
             <select name="product_id" class="form-control" required>
@@ -219,7 +233,7 @@ if (isset($_POST['add_cpri_test'])) {
         <!-- Upload Report -->
         <div class="mb-3">
             <label class="form-label">Upload CPRI Report</label>
-            <input type="file" name="uploaded_report" class="form-control">
+            <input type="file" name="uploaded_report" class="form-control" accept=".pdf,image/png,image/jpeg">
         </div>
 
         <!-- Tested By CPRI -->

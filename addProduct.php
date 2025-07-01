@@ -54,7 +54,7 @@ if (isset($_POST['addproduct'])) {
         ]);
 
         if ($result) {
-            echo "<script>alert('Product added successfully!'); location.assign('addProducts.php');</script>";
+            echo "<script>alert('Product added successfully!'); location.assign('addProduct.php');</script>";
             exit;
         } else {
             echo "<div class='alert alert-danger'>Failed to add product.</div>";

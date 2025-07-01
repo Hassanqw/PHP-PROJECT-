@@ -29,11 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['labTest'])) {
             INSERT INTO lab_test (
                 product_id, testing_type_id, department_id, tester_id, test_date, 
                 test_start_time, test_end_time, criteria_tested, observed_output, expected_output, 
-                result, remarks, status, is_sent_to_CPRI, test_roll_number, created_at, updated_at
+                result, remarks,   created_at, updated_at
             ) VALUES (
                 :product_id, :testing_type_id, :department_id, :tester_id, :test_date, 
                 :test_start_time, :test_end_time, :criteria_tested, :observed_output, :expected_output, 
-                :result, :remarks, :status, :is_sent_to_CPRI, :test_roll_number, :created_at, :updated_at
+                :result, :remarks ,   :created_at, :updated_at
             )
         ");
 
@@ -50,9 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['labTest'])) {
             ':expected_output'   => $_POST['expected_output'],
             ':result'            => $_POST['result'],
             ':remarks'           => $_POST['remarks'],
-            ':status'            => $_POST['status'],
-            ':is_sent_to_CPRI'   => $_POST['is_sent_to_CPRI'],
-            ':test_roll_number'  => $_POST['test_roll_number'],
+            
             ':created_at'        => $_POST['created_at'],
             ':updated_at'        => $_POST['updated_at']
         ]);
@@ -170,24 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['labTest'])) {
                 <label>Remarks</label>
                 <textarea name="remarks" class="form-control"></textarea>
 
-                <!-- Status -->
-                <label>Status</label>
-                <select name="status" class="form-control" required>
-                    <option value="Pending">Pending</option>
-                    <option value="Tested">Tested</option>
-                    <option value="Re-test">Re-test</option>
-                </select>
+           
 
-                <!-- Sent to CPRI -->
-                <label>Sent to CPRI?</label>
-                <select name="is_sent_to_CPRI" class="form-control" required>
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                </select>
+           
 
-                <!-- Test Roll Number -->
-                <label>Test Roll Number</label>
-                <input type="text" name="test_roll_number" class="form-control" required>
+                
 
                 <!-- Created/Updated -->
                 <input type="hidden" name="created_at" value="<?= date('Y-m-d H:i:s') ?>">
