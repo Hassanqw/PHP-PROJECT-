@@ -18,7 +18,7 @@
 <link href="main.d810cf0ae7f39f28f336.css" rel="stylesheet"></head>
 
 <body>
-    <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+    <div class="app-container app-theme-white  fixed-header fixed-sidebar">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
                 <div class="logo-src"></div>
@@ -1146,7 +1146,7 @@ if (isset($_SESSION['adminEmail'])) {
                     </div>
                 </div>
             </div>
-        </div>        <div class="app-main">
+        </div>       
                 <div class="app-sidebar sidebar-shadow">
                     <div class="app-header__logo">
                         <div class="logo-src"></div>

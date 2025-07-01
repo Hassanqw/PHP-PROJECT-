@@ -99,69 +99,70 @@ if (isset($_POST["addproductType"])) {
 // }
 
 
-                                        //Add Lab Test:
+//Add Lab Test:
 
 
-if (isset($_POST['submit'])) {
 
-    // First, validate required fields (optional but recommended)
-    $required_fields = ['product_id', 'testing_type_id', 'department_id', 'tester_id', 'test_date', 'test_start_time', 'test_end_time', 'criteria_tested', 'observed_output', 'expected_output', 'result', 'remarks', 'status', 'is_sent_to_CPRI', 'test_roll_number', 'created_at', 'updated_at'];
+// if (isset($_POST['labTest'])) {
 
-    foreach ($required_fields as $field) {
-        if (empty($_POST[$field])) {
-            echo "<script>alert('Please fill all fields. Missing: $field');</script>";
-            return;
-        }
-    }
+    
+//         $stmt = $pdo->prepare("
+//             INSERT INTO lab_test (
+//                 product_id, testing_type_id, department_id, tester_id, test_date, 
+//                 test_start_time, test_end_time, criteria_tested, observed_output, expected_output, 
+//                 result, remarks, status, is_sent_to_CPRI, test_roll_number, created_at, updated_at
+//             ) VALUES (
+//                 :product_id, :testing_type_id, :department_id, :tester_id, :test_date, 
+//                 :test_start_time, :test_end_time, :criteria_tested, :observed_output, :expected_output, 
+//                 :result, :remarks, :status, :is_sent_to_CPRI, :test_roll_number, :created_at, :updated_at
+//             )
+//         ");
 
-    // Prepared statement
-    $query = $pdo->prepare("INSERT INTO lab_test 
-        (product_id, testing_type_id, department_id, tester_id, test_date, test_start_time, test_end_time, criteria_tested, observed_output, expected_output, result, remarks, status, is_sent_to_CPRI, test_roll_number, created_at, updated_at) 
-        VALUES 
-        (:product_id, :testing_type_id, :department_id, :tester_id, :test_date, :test_start_time, :test_end_time, :criteria_tested, :observed_output, :expected_output, :result, :remarks, :status, :is_sent_to_CPRI, :test_roll_number, :created_at, :updated_at)");
+//         $stmt->execute([
+//             ':product_id'        => $_POST['product_id'],
+//             ':testing_type_id'   => $_POST['testing_type_id'],
+//             ':department_id'     => $_POST['department_id'],
+//             ':tester_id'         => $_POST['tester_id'],
+//             ':test_date'         => $_POST['test_date'],
+//             ':test_start_time'   => $_POST['test_start_time'],
+//             ':test_end_time'     => $_POST['test_end_time'],
+//             ':criteria_tested'   => $_POST['criteria_tested'],
+//             ':observed_output'   => $_POST['observed_output'],
+//             ':expected_output'   => $_POST['expected_output'],
+//             ':result'            => $_POST['result'],
+//             ':remarks'           => $_POST['remarks'],
+//             ':status'            => $_POST['status'],
+//             ':is_sent_to_CPRI'   => $_POST['is_sent_to_CPRI'],
+//             ':test_roll_number'  => $_POST['test_roll_number'],
+//             ':created_at'        => $_POST['created_at'],
+//             ':updated_at'        => $_POST['updated_at']
+//         ]);
 
-    $query->execute([
-        ':product_id'         => $_POST['product_id'],
-        ':testing_type_id'    => $_POST['testing_type_id'],
-        ':department_id'      => $_POST['department_id'],
-        ':tester_id'          => $_POST['tester_id'],
-        ':test_date'          => $_POST['test_date'],
-        ':test_start_time'    => $_POST['test_start_time'],
-        ':test_end_time'      => $_POST['test_end_time'],
-        ':criteria_tested'    => $_POST['criteria_tested'],
-        ':observed_output'    => $_POST['observed_output'],
-        ':expected_output'    => $_POST['expected_output'],
-        ':result'             => $_POST['result'],
-        ':remarks'            => $_POST['remarks'],
-        ':status'             => $_POST['status'],
-        ':is_sent_to_CPRI'    => $_POST['is_sent_to_CPRI'],
-        ':test_roll_number'   => $_POST['test_roll_number'],
-        ':created_at'         => $_POST['created_at'],
-        ':updated_at'         => $_POST['updated_at']
-    ]);
+//         echo "<script>alert('Lab Test added successfully'); window.location.href='add_cpri_test.php';</script>";
 
-    echo "<script>alert('✅ Lab Test Record Added'); location.href='add_lab_test.php';</script>";
-}
+    
+    
+// } 
 
-                                             //ADD TESTER:
+//                                              //ADD TESTER:
 
-if (isset($_POST['addTester'])) {
-    $testerName = $_POST['tester_name'];
-    $email = $_POST['email'];
-    $departmentId = $_POST['department_id'];
+// if (isset($_POST['addTester'])) {
+//     $testerName = $_POST['tester_name'];
+//     $email = $_POST['email'];
+//     $departmentId = $_POST['department_id'];
 
-    if (!empty($testerName) && !empty($email) && !empty($departmentId)) {
-        $stmt = $pdo->prepare("INSERT INTO testers (name, email, department_id) VALUES (:tester_name, :email, :department_id)");
-        $stmt->execute([
-            ':tester_name' => $testerName,
-            ':email' => $email,
-            ':department_id' => $departmentId
-        ]);
-        echo "<script>alert('Tester Added Successfully'); location.href='add_tester.php';</script>";
-    } else {
-        echo "<script>alert('All fields are required!');</script>";
-    }
-}
+//     if (!empty($testerName) && !empty($email) && !empty($departmentId)) {
+//         $stmt = $pdo->prepare("INSERT INTO testers (name, email, department_id) VALUES (:tester_name, :email, :department_id)");
+//         $stmt->execute([
+//             ':tester_name' => $testerName,
+//             ':email' => $email,
+//             ':department_id' => $departmentId
+//         ]);
+//         echo "<script>alert('Tester Added Successfully'); location.href='add_tester.php';</script>";
+//     } else {
+//         echo "<script>alert('All fields are required!');</script>";
+//     }
+// }
 
                            //ADD DEPARTMENT:
                            
