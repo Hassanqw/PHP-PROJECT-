@@ -2,70 +2,14 @@
 include("php/query.php");
 include("components/header.php");
 
-// Step 1: All products
-$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
 
-/// Step 1: All products
-$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
-
-// Step 2: Get products which have passed lab_test
-$passedProductIds = $pdo->query("
-    SELECT DISTINCT product_id 
-    FROM lab_test 
-    WHERE result = 'Pass'
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// Step 3: Get products which have failed (i.e. NOT passed)
-$failedProducts = array_filter($allProducts, function($p) use ($passedProductIds) {
-    return !in_array($p['product_id'], $passedProductIds);
-});
-
-// **New Step: Get products already added in re-manufacture**
-$addedRemanufactureProductIds = $pdo->query("
-    SELECT DISTINCT `Re-Product_id` FROM `re-manufacture`
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// Step 4: Filter failed products to exclude those already added to re-manufacture
-$availableProductsForRemanufacture = array_filter($failedProducts, function($p) use ($addedRemanufactureProductIds) {
-    return !in_array($p['product_id'], $addedRemanufactureProductIds);
-});
-
-// Step 3: Get products which have failed (i.e. NOT passed)
-$failedProducts = array_filter($allProducts, function($p) use ($passedProductIds) {
-    return !in_array($p['product_id'], $passedProductIds);
-});
-
-// Step 4: Get testers and departments for dropdowns
-$testers = $pdo->query("SELECT * FROM testers")->fetchAll(PDO::FETCH_ASSOC);
-$departments = $pdo->query("SELECT * FROM departments")->fetchAll(PDO::FETCH_ASSOC);
-
-// Step 5: On form submission, insert into re-manufacture table
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remanufactureForm'])) {
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO `re-manufacture` (`Re-Product_id`, `Tested_by`, `Department`) 
-            VALUES (:re_product_id, :tested_by, :department)
-        ");
-
-        $stmt->execute([
-            ':re_product_id' => $_POST['Re_Product_id'],
-            ':tested_by' => $_POST['Tested_by'],
-            ':department' => $_POST['Department'],
-        ]);
-
-        echo "<script>alert('Re-Manufacture record added successfully!'); window.location.href='re_manufacture.php';</script>";
-        exit;
-
-    } catch (PDOException $e) {
-        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
-    }
-}
 ?>
 
 <style>
 .container {
-    width: 600px;
-    margin: 50px auto;
+    width: 700px;
+    margin-top: -500px;
+    margin-left: 300px;
 }
 label {
     font-weight: bold;
@@ -85,7 +29,21 @@ label {
 </style>
 
 <div class="container">
-    <h2>Add Re-Manufacture Record</h2>
+
+    <div class="app-main__outer">
+    <div class="app-main__inner">
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-graph text-success"></i>
+                    </div>
+                    <div>Re Menufacture.
+                        <div class="page-title-subheading">Enter Remanufacture Products.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     <form method="POST">
       <select name="Re_Product_id" id="Re_Product_id" class="form-control" required>
     <option value="">Select Product</option>

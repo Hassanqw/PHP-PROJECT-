@@ -7,28 +7,27 @@ include("components/header.php");
     .container{
         width: 700px;
         margin-top:  -500px ; 
-         margin-left:  150px ; 
+         margin-left:  350px ; 
     }
 </style>
 
 <div class="container">
-    <div class="app-main__outer">
-               <div class="app-main__outer">
+
+ <div class="app-main__outer">
     <div class="app-main__inner">
         <div class="app-page-title">
             <div class="page-title-wrapper">
                 <div class="page-title-heading">
                     <div class="page-title-icon">
-                        <i class="pe-7s-box1 text-success"></i>
+                        <i class="pe-7s-graph text-success"></i>
                     </div>
-                    <div >Add New Tester
-                        <div class="page-title-subheading">Add new tester to the system.</div>
+                    <div>Add New Tester
+                        <div class="page-title-subheading">Enter Tester details below.</div>
                     </div>
                 </div>
             </div>
         </div>
 
-<div class="container mt-5" style="max-width: 700px;">
 
     <form method="POST">
         <!-- Tester Name -->
@@ -59,6 +58,6 @@ include("components/header.php");
         <button name="addTester" class="btn btn-primary w-100">Add Tester</button>
     </form>
 </div>
-</div>
+
 <?php include("components/footer.php"); 
 ?>

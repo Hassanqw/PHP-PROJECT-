@@ -12,8 +12,21 @@ include("components/header.php");
 </style>
 
 <div class="container">
-<div class="container mt-5" style="max-width: 700px;">
-    <h3 class="mb-4">Add New Department</h3>
+
+ <div class="app-main__outer">
+    <div class="app-main__inner">
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-graph text-success"></i>
+                    </div>
+                    <div>Add New Departments
+                        <div class="page-title-subheading">Enter Department details below.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <form method="POST">
         <!-- Department Name -->
@@ -30,6 +43,5 @@ include("components/header.php");
 
         <button type="submit" name="addDepartment" class="btn btn-success w-100">Add Department</button>
     </form>
-</div>
 </div>
 <?php include("components/footer.php"); ?>

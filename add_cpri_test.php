@@ -2,134 +2,31 @@
 include("php/query.php");
 include("components/header.php");
 
-// Step 1: Get product IDs which have passed lab_test and not already in cpri_tests
-$passedProductIds = $pdo->query("
-    SELECT DISTINCT product_id 
-    FROM lab_test 
-    WHERE result = 'Pass'
-    AND product_id NOT IN (SELECT DISTINCT product_id FROM cpri_tests)
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// Step 2: Get products which are passed and not tested in cpri_tests
-$passedProducts = [];
-if (!empty($passedProductIds)) {
-    $placeholders = implode(',', array_fill(0, count($passedProductIds), '?'));
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-    $stmt->execute($passedProductIds);
-    $passedProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-$errors = [];
-$uploaded_report_path = null;
-
-if (isset($_POST['add_cpri_test'])) {
-    // Sanitize input
-    $product_id = trim($_POST['product_id'] ?? '');
-    $related_test_id = trim($_POST['related_test_id'] ?? null);
-    $submission_date = trim($_POST['submission_date'] ?? null);
-    $received_by = trim($_POST['received_by'] ?? null);
-    $test_date = trim($_POST['test_date'] ?? null);
-    $test_report_no = trim($_POST['test_report_no'] ?? null);
-    $parameters_tested = trim($_POST['parameters_tested'] ?? null);
-    $observed_output = trim($_POST['observed_output'] ?? null);
-    $result_val = trim($_POST['result'] ?? null);
-    $certification_status = trim($_POST['certification_status'] ?? null);
-    $remarks = trim($_POST['remarks'] ?? null);
-    $documents_attached = trim($_POST['documents_attached'] ?? null);
-    $tested_by_cpri = trim($_POST['tested_by_cpri'] ?? null);
-    $decision_date = trim($_POST['decision_date'] ?? null);
-
-    // Basic validation
-    if (empty($product_id)) {
-        $errors[] = "Product is required.";
-    }
-
-    // Validate dates format (optional, but recommended)
-    $dateFields = ['submission_date' => $submission_date, 'test_date' => $test_date, 'decision_date' => $decision_date];
-    foreach ($dateFields as $field => $value) {
-        if ($value && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-            $errors[] = ucfirst(str_replace('_', ' ', $field)) . " is not a valid date.";
-        }
-    }
-
-    // Handle file upload if any
-    if (isset($_FILES['uploaded_report']) && $_FILES['uploaded_report']['error'] !== UPLOAD_ERR_NO_FILE) {
-        $file = $_FILES['uploaded_report'];
-        if ($file['error'] === UPLOAD_ERR_OK) {
-            $allowed_types = ['application/pdf', 'image/png', 'image/jpeg'];
-            $finfo = new finfo(FILEINFO_MIME_TYPE);
-            $mime = $finfo->file($file['tmp_name']);
-
-            if (!in_array($mime, $allowed_types)) {
-                $errors[] = "Uploaded file must be PDF, PNG, or JPG.";
-            } else {
-                $upload_dir = __DIR__ . '/uploads/reports/';
-                if (!is_dir($upload_dir)) {
-                    mkdir($upload_dir, 0755, true);
-                }
-
-                $safeName = preg_replace("/[^a-zA-Z0-9_\.-]/", '_', basename($file['name']));
-                $filename = uniqid('report_') . '_' . $safeName;
-                $target_path = $upload_dir . $filename;
-
-                if (move_uploaded_file($file['tmp_name'], $target_path)) {
-                    $uploaded_report_path = 'uploads/reports/' . $filename;
-                } else {
-                    $errors[] = "Failed to upload the report file.";
-                }
-            }
-        } else {
-            $errors[] = "Error uploading file.";
-        }
-    }
-
-    if (empty($errors)) {
-        // Insert CPRI test record
-        $stmt = $pdo->prepare("INSERT INTO cpri_tests (
-            product_id, related_test_id, submission_date, received_by, test_date, test_report_no,
-            parameters_tested, observed_output, result, certification_status, remarks, documents_attached,
-            uploaded_report_path, tested_by_cpri, decision_date, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-
-        $res = $stmt->execute([
-            $product_id,
-            $related_test_id ?: null,
-            $submission_date ?: null,
-            $received_by ?: null,
-            $test_date ?: null,
-            $test_report_no ?: null,
-            $parameters_tested ?: null,
-            $observed_output ?: null,
-            $result_val ?: null,
-            $certification_status ?: null,
-            $remarks ?: null,
-            $documents_attached ?: null,
-            $uploaded_report_path ?: null,
-            $tested_by_cpri ?: null,
-            $decision_date ?: null
-        ]);
-
-        if ($res) {
-            echo "<script>alert('CPRI Test record added successfully!'); location.assign('add_cpri_test.php');</script>";
-            exit;
-        } else {
-            $errors[] = "Failed to insert the test record.";
-        }
-    }
-}
 ?>
-
 <style>
-.container {
-    width: 700px;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-}
+
+     .container{
+        width: 700px;
+        margin-top:  -550px ; 
+    }
+
 </style>
 
 <div class="container">
-    <h3 class="mb-4">Add CPRI Test Record</h3>
+    <div class="app-main__outer">
+    <div class="app-main__inner">
+        <div class="app-page-title">
+            <div class="page-title-wrapper">
+                <div class="page-title-heading">
+                    <div class="page-title-icon">
+                        <i class="pe-7s-graph text-success"></i>
+                    </div>
+                    <div>CPRI TEST
+                        <div class="page-title-subheading">FILL THE FORM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <?php if (!empty($errors)): ?>
         <div class="alert alert-danger">
@@ -157,11 +54,7 @@ if (isset($_POST['add_cpri_test'])) {
             </select>
         </div>
 
-        <!-- Related Test ID -->
-        <div class="mb-3">
-            <label class="form-label">Related Test ID</label>
-            <input type="text" name="related_test_id" class="form-control" value="<?= htmlspecialchars($_POST['related_test_id'] ?? '') ?>">
-        </div>
+      
 
         <!-- Submission Date -->
         <div class="mb-3">
@@ -179,12 +72,6 @@ if (isset($_POST['add_cpri_test'])) {
         <div class="mb-3">
             <label class="form-label">Test Date</label>
             <input type="date" name="test_date" class="form-control" value="<?= htmlspecialchars($_POST['test_date'] ?? '') ?>">
-        </div>
-
-        <!-- Test Report No -->
-        <div class="mb-3">
-            <label class="form-label">Test Report No</label>
-            <input type="text" name="test_report_no" class="form-control" value="<?= htmlspecialchars($_POST['test_report_no'] ?? '') ?>">
         </div>
 
         <!-- Parameters Tested -->

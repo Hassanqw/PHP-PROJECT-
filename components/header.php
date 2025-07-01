@@ -1234,11 +1234,11 @@ if (isset($_SESSION['adminEmail'])) {
                                                 <i class="metismenu-icon"></i> Login
                                             </a>
                                         </li>
-                                        <li>
+                                        <!-- <li>
                                             <a href="addCategory.php" >
                                                 <i class="metismenu-icon"></i>Add Category
                                             </a>
-                                        </li>
+                                        </li> -->
                                         <li>
                                             <a href="add_product_types.php" >
                                                 <i class="metismenu-icon"></i>Add Product Type

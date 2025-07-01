@@ -2,72 +2,13 @@
 include("php/query.php");
 include("components/header.php");
 
-// Step 1: Saare products uthao
-$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
 
-// Step 2: Jo products lab_test table mein "Pass" ho chuke hain, unke IDs
-$passedProductIds = $pdo->query("
-    SELECT DISTINCT product_id 
-    FROM lab_test 
-    WHERE result = 'Pass'
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// Step 3: Filter karo sirf un products ko jo abhi Pass nahi hue
-$availableProducts = array_filter($allProducts, function($p) use ($passedProductIds) {
-    return !in_array($p['product_id'], $passedProductIds);
-});
-
-// Step 4: Baaki dropdowns
-$testingTypes = $pdo->query("SELECT * FROM testing_types")->fetchAll(PDO::FETCH_ASSOC);
-$departments = $pdo->query("SELECT * FROM departments")->fetchAll(PDO::FETCH_ASSOC);
-$testers = $pdo->query("SELECT * FROM testers")->fetchAll(PDO::FETCH_ASSOC);
-
-// Step 5: Form submit hone pe insert karo
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['labTest'])) {
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO lab_test (
-                product_id, testing_type_id, department_id, tester_id, test_date, 
-                test_start_time, test_end_time, criteria_tested, observed_output, expected_output, 
-                result, remarks,   created_at, updated_at
-            ) VALUES (
-                :product_id, :testing_type_id, :department_id, :tester_id, :test_date, 
-                :test_start_time, :test_end_time, :criteria_tested, :observed_output, :expected_output, 
-                :result, :remarks ,   :created_at, :updated_at
-            )
-        ");
-
-        $stmt->execute([
-            ':product_id'        => $_POST['product_id'],
-            ':testing_type_id'   => $_POST['testing_type_id'],
-            ':department_id'     => $_POST['department_id'],
-            ':tester_id'         => $_POST['tester_id'],
-            ':test_date'         => $_POST['test_date'],
-            ':test_start_time'   => $_POST['test_start_time'],
-            ':test_end_time'     => $_POST['test_end_time'],
-            ':criteria_tested'   => $_POST['criteria_tested'],
-            ':observed_output'   => $_POST['observed_output'],
-            ':expected_output'   => $_POST['expected_output'],
-            ':result'            => $_POST['result'],
-            ':remarks'           => $_POST['remarks'],
-            
-            ':created_at'        => $_POST['created_at'],
-            ':updated_at'        => $_POST['updated_at']
-        ]);
-
-        echo "<script>alert('Test successfully added!'); window.location.href='add_lab_test.php';</script>";
-        exit;
-
-    } catch (PDOException $e) {
-        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
-    }
-}
 ?>
 
 <style>
 .container {
     width: 700px;
-    margin-top: -800px;
+    margin-top: -600px;
     margin-left: 300px;
 }
 </style>
