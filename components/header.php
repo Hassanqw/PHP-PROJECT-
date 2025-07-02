@@ -1230,7 +1230,7 @@ if (isset($_SESSION['adminEmail'])) {
                                 </li>
                                
                                         <li>
-                                            <a href="pages-login.php" >
+                                            <a href="index.php" >
                                                 <i class="metismenu-icon"></i> Login
                                             </a>
                                         </li>

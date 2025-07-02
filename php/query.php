@@ -8,9 +8,9 @@ $categoryName = $categoryImageName = $categoryDes = "";
 $categoryNameErr = $categoryImageNameErr = $categoryDesErr = "";
 
 if (isset($_POST['addCategory'])) {
-    $categoryName = $_POST['cName'];
-    $categoryDes = $_POST['cDes'];
-    $categoryImageName = strtolower($_FILES["cImage"]["name"]);
+$categoryName = $_POST['cName'];
+ $categoryDes = $_POST['cDes'];
+ $categoryImageName = strtolower($_FILES["cImage"]["name"]);
     $categoryImageTmpName = $_FILES["cImage"]["tmp_name"];
     $extension = pathinfo($categoryImageName, PATHINFO_EXTENSION);
     $destination = "images/" . $categoryImageName;
@@ -183,8 +183,8 @@ if (isset($_POST['addDepartment'])) {
 }
 
 //resigter form
-// $userName = $userEmail = $userPassword = $userConfirmPassword = "";
-// $userNameErr = $userEmailErr = $userPasswordErr = $userConfirmPasswordErr = "";
+$userName = $userEmail = $userPassword = $userConfirmPassword = "";
+$userNameErr = $userEmailErr = $userPasswordErr = $userConfirmPasswordErr = "";
 // if(isset($_POST['userRegister'])){
 //     $userName= $_POST['userName'];
 //     $userEmail= $_POST['userEmail'];
@@ -294,6 +294,14 @@ $passedProductIds = $pdo->query("
     WHERE result = 'Pass'
     AND product_id NOT IN (SELECT DISTINCT product_id FROM cpri_tests)
 ")->fetchAll(PDO::FETCH_COLUMN);
+
+$failedProducts = $pdo->query("
+    SELECT p.product_id, p.product_name 
+    FROM products p
+    JOIN cpri_tests c ON p.product_id = c.product_id
+    WHERE c.result = 'Failed'
+")->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Step 2: Get products which are passed and not tested in cpri_tests
 $passedProducts = [];

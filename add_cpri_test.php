@@ -7,7 +7,7 @@ include("components/header.php");
 
      .container{
         width: 700px;
-        margin-top:  -550px ; 
+        margin-top:  -600px ; 
     }
 
 </style>
@@ -41,18 +41,15 @@ include("components/header.php");
     <form method="POST" enctype="multipart/form-data">
         
         <!-- Product (Passed in lab_test and not tested in cpri_tests) -->
-        <div class="mb-3">
-            <label class="form-label">Product</label>
-            <select name="product_id" class="form-control" required>
-                <option value="">Select Product</option>
-                <?php foreach ($passedProducts as $product): ?>
-                    <option value="<?= htmlspecialchars($product['product_id']) ?>" 
-                        <?= (($_POST['product_id'] ?? '') == $product['product_id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($product['product_name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+     <select name="product_id" class="form-control" required>
+    <option value="">Select Failed Product</option>
+    <?php foreach ($failedProducts as $product): ?>
+        <option value="<?= htmlspecialchars($product['product_id']) ?>">
+            <?= htmlspecialchars($product['product_name']) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
 
       
 
