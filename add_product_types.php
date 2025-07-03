@@ -7,8 +7,7 @@ include("components/header.php");
 
     .container{
         width: 700px;
-        margin-top:  -500px ; 
-         margin-left:  300px ; 
+        margin-top: 150px; 
     }
 </style>
 

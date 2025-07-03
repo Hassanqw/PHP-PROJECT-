@@ -6,10 +6,11 @@ include("components/header.php");
 ?>
 
 <style>
-    .container {
-        width: 700px;
-        margin-top: -550px;
-         margin-left:  300px ; 
+
+    .container{
+        width: 600px;
+        font: 1em sans-serif;
+        margin-top: 150px; 
     }
 </style>
 
@@ -70,7 +71,7 @@ include("components/header.php");
         <!-- Manufacture Date -->
         <div class="mb-3">
             <label for="manufactureDate" class="form-label fw-bold">Manufacture Date</label>
-            <input type="date" class="form-control form-control-lg" id="manufactureDate" name="manufacture_date" value="<?php echo htmlspecialchars($manufacture_date); ?>">
+            <input type="date" class="form-control form-control-lg" id="manufactureDate" name="manufacture_date" max="<?= date('Y-m-d'); ?>" value="<?php echo htmlspecialchars($manufacture_date); ?>required>
             <small class="text-danger"><?php echo $manufactureDateErr ?? ''; ?></small>
         </div>
 

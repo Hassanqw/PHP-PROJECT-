@@ -6,11 +6,11 @@ include("components/header.php");
 ?>
 
 <style>
-.container {
-    width: 700px;
-    margin-top: -500px;
-    margin-left: 300px;
-}
+
+    .container{
+        width: 700px;
+        margin-top: 150px; 
+    }
 label {
     font-weight: bold;
     margin-top: 10px;

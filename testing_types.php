@@ -6,9 +6,10 @@ include("components/header.php");
 ?>
 
 <style>
-    .container {
+
+    .container{
         width: 700px;
-        margin-top: -500px;
+        margin-top: 150px; 
     }
 </style>
 

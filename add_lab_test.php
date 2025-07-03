@@ -4,13 +4,12 @@ include("components/header.php");
 
 
 ?>
-
 <style>
-.container {
-    width: 700px;
-    margin-top: -600px;
-    margin-left: 300px;
-}
+
+    .container{
+        width: 700px;
+        margin-top: 150px; 
+    }
 </style>
 
 <div class="container">
@@ -30,8 +29,7 @@ include("components/header.php");
             </div>
 
             <form method="POST">
-                <!-- Product (Only Not Passed) -->
-                <label>Product (Testing ke liye)</label>
+                <label>Product</label>
                 <select name="product_id" class="form-control" required>
                     <option value="">Select Product</option>
                     <?php foreach ($availableProducts as $p): ?>
@@ -76,7 +74,7 @@ include("components/header.php");
 
                 <!-- Test Date -->
                 <label>Test Date</label>
-                <input type="date" name="test_date" class="form-control" required>
+                <input type="date" name="test_date" class="form-control"  max="<?= date('Y-m-d'); ?>" Required>
 
                 <!-- Test Start Time -->
                 <label>Test Start Time</label>
@@ -109,16 +107,10 @@ include("components/header.php");
                 <label>Remarks</label>
                 <textarea name="remarks" class="form-control"></textarea>
 
-           
-
-           
-
-                
-
                 <!-- Created/Updated -->
                 <input type="hidden" name="created_at" value="<?= date('Y-m-d H:i:s') ?>">
                 <input type="hidden" name="updated_at" value="<?= date('Y-m-d H:i:s') ?>">
-
+                <input type="hidden" name="labTest" value="1"> 
                 <br>
                 <button type="submit" name="labTest" class="btn btn-primary">Submit Lab Test</button>
             </form>

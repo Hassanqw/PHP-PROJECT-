@@ -146,23 +146,23 @@ if (isset($_POST["addproductType"])) {
 
 //                                              //ADD TESTER:
 
-// if (isset($_POST['addTester'])) {
-//     $testerName = $_POST['tester_name'];
-//     $email = $_POST['email'];
-//     $departmentId = $_POST['department_id'];
+if (isset($_POST['addTester'])) {
+    $testerName = $_POST['tester_name'];
+    $email = $_POST['email'];
+    $departmentId = $_POST['department_id'];
 
-//     if (!empty($testerName) && !empty($email) && !empty($departmentId)) {
-//         $stmt = $pdo->prepare("INSERT INTO testers (name, email, department_id) VALUES (:tester_name, :email, :department_id)");
-//         $stmt->execute([
-//             ':tester_name' => $testerName,
-//             ':email' => $email,
-//             ':department_id' => $departmentId
-//         ]);
-//         echo "<script>alert('Tester Added Successfully'); location.href='add_tester.php';</script>";
-//     } else {
-//         echo "<script>alert('All fields are required!');</script>";
-//     }
-// }
+    if (!empty($testerName) && !empty($email) && !empty($departmentId)) {
+        $stmt = $pdo->prepare("INSERT INTO testers (name, email, department_id) VALUES (:tester_name, :email, :department_id)");
+        $stmt->execute([
+            ':tester_name' => $testerName,
+            ':email' => $email,
+            ':department_id' => $departmentId
+        ]);
+        echo "<script>alert('Tester Added Successfully'); location.href='add_tester.php';</script>";
+    } else {
+        echo "<script>alert('All fields are required!');</script>";
+    }
+}
 
                            //ADD DEPARTMENT:
                            
@@ -262,7 +262,7 @@ if (isset($_POST['userLogin'])) {
                 $_SESSION['adminName'] = $admin['name'];
                 $_SESSION['adminEmail'] = $admin['email'];
                 $_SESSION['adminId'] = $admin['id'];
-                echo "<script>alert('Admin Login');location.assign('2.php')</script>";
+                echo "<script>alert('Admin Login');location.assign('dashboards-commerce.php')</script>";
             } else {
                 $userPasswordErr = "Incorrect Password for Admin";
             }
@@ -287,34 +287,12 @@ if (isset($_POST['userLogin'])) {
                                       //ADD CPRI
 
 
-// Step 1: Get product IDs which have passed lab_test and not already in cpri_tests
-$passedProductIds = $pdo->query("
-    SELECT DISTINCT product_id 
-    FROM lab_test 
-    WHERE result = 'Pass'
-    AND product_id NOT IN (SELECT DISTINCT product_id FROM cpri_tests)
-")->fetchAll(PDO::FETCH_COLUMN);
 
-$failedProducts = $pdo->query("
-    SELECT p.product_id, p.product_name 
-    FROM products p
-    JOIN cpri_tests c ON p.product_id = c.product_id
-    WHERE c.result = 'Failed'
-")->fetchAll(PDO::FETCH_ASSOC);
-
-
-// Step 2: Get products which are passed and not tested in cpri_tests
-$passedProducts = [];
-if (!empty($passedProductIds)) {
-    $placeholders = implode(',', array_fill(0, count($passedProductIds), '?'));
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id IN ($placeholders)");
-    $stmt->execute($passedProductIds);
-    $passedProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 
 $errors = [];
 $uploaded_report_path = null;
 
+// Auto-generate IDs
 function generateRelatedTestId($pdo) {
     $datePrefix = date("Ymd");
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM cpri_tests WHERE DATE(created_at) = CURDATE()");
@@ -330,34 +308,40 @@ function generateTestReportNo($pdo) {
     return 'TRN-' . $year . '-' . str_pad($countThisYear, 4, '0', STR_PAD_LEFT);
 }
 
+// Only include products passed in lab_test but not yet passed in cpri_tests
+$passedProducts = $pdo->query("
+    SELECT p.product_id, p.product_name
+    FROM products p
+    JOIN lab_test lt ON p.product_id = lt.product_id
+    LEFT JOIN cpri_tests ct ON p.product_id = ct.product_id AND LOWER(ct.result) = 'pass'
+    WHERE LOWER(lt.result) = 'pass' AND ct.product_id IS NULL
+    GROUP BY p.product_id
+")->fetchAll(PDO::FETCH_ASSOC);
+
+
+// On form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
-    $product_id = trim($_POST['product_id'] ?? '');
-    $submission_date = trim($_POST['submission_date'] ?? '');
-    $received_by = trim($_POST['received_by'] ?? '');
-    $test_date = trim($_POST['test_date'] ?? '');
-    $parameters_tested = trim($_POST['parameters_tested'] ?? '');
-    $observed_output = trim($_POST['observed_output'] ?? '');
-    $result_val = trim($_POST['result'] ?? '');
+    $product_id           = trim($_POST['product_id'] ?? '');
+    $submission_date      = trim($_POST['submission_date'] ?? '');
+    $received_by          = trim($_POST['received_by'] ?? '');
+    $test_date            = trim($_POST['test_date'] ?? '');
+    $parameters_tested    = trim($_POST['parameters_tested'] ?? '');
+    $observed_output      = trim($_POST['observed_output'] ?? '');
+    $result_val           = trim($_POST['result'] ?? '');
     $certification_status = trim($_POST['certification_status'] ?? '');
-    $remarks = trim($_POST['remarks'] ?? '');
-    $documents_attached = trim($_POST['documents_attached'] ?? '');
-    $tested_by_cpri = trim($_POST['tested_by_cpri'] ?? '');
-    $decision_date = trim($_POST['decision_date'] ?? '');
+    $remarks              = trim($_POST['remarks'] ?? '');
+    $documents_attached   = trim($_POST['documents_attached'] ?? '');
+    $tested_by_cpri       = trim($_POST['tested_by_cpri'] ?? '');
+    $decision_date        = trim($_POST['decision_date'] ?? '');
 
-    // Auto-generated values
+    // Auto IDs
     $related_test_id = generateRelatedTestId($pdo);
-    $test_report_no = generateTestReportNo($pdo);
+    $test_report_no  = generateTestReportNo($pdo);
 
-    if (empty($product_id)) {
-        $errors[] = "Product is required.";
-    }
-
-    $dateFields = ['submission_date' => $submission_date, 'test_date' => $test_date, 'decision_date' => $decision_date];
-    foreach ($dateFields as $field => $value) {
-        if ($value && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-            $errors[] = ucfirst(str_replace('_', ' ', $field)) . " is not a valid date.";
-        }
-    }
+    // Validations
+    if (empty($product_id)) $errors[] = "Product is required.";
+    if (empty($result_val)) $errors[] = "Result is required.";
+    if (empty($certification_status)) $errors[] = "Certification status is required.";
 
     // File upload
     if (isset($_FILES['uploaded_report']) && $_FILES['uploaded_report']['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -368,12 +352,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
             $mime = $finfo->file($file['tmp_name']);
 
             if (!in_array($mime, $allowed_types)) {
-                $errors[] = "Uploaded file must be PDF, PNG, or JPG.";
+                $errors[] = "File must be PDF, PNG, or JPG.";
             } else {
                 $upload_dir = __DIR__ . '/uploads/reports/';
-                if (!is_dir($upload_dir)) {
-                    mkdir($upload_dir, 0755, true);
-                }
+                if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 
                 $safeName = preg_replace("/[^a-zA-Z0-9_\.-]/", '_', basename($file['name']));
                 $filename = uniqid('report_') . '_' . $safeName;
@@ -382,46 +364,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
                 if (move_uploaded_file($file['tmp_name'], $target_path)) {
                     $uploaded_report_path = 'uploads/reports/' . $filename;
                 } else {
-                    $errors[] = "Failed to upload the report file.";
+                    $errors[] = "Failed to upload the file.";
                 }
             }
         } else {
-            $errors[] = "Error uploading file.";
+            $errors[] = "File upload error.";
         }
     }
 
-   $stmt = $pdo->prepare("INSERT INTO cpri_tests (
-    product_id, related_test_id, submission_date, received_by, test_date, test_report_no,
-    parameters_tested, observed_output, result, certification_status, remarks, documents_attached,
-    uploaded_report_path, tested_by_cpri, decision_date, created_at, updated_at
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+    // Proceed if no errors
+    if (empty($errors)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO cpri_tests (
+                product_id, related_test_id, submission_date, received_by, test_date, test_report_no,
+                parameters_tested, observed_output, result, certification_status, remarks, documents_attached,
+                uploaded_report_path, tested_by_cpri, decision_date, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
 
-$res = $stmt->execute([
-    $product_id,
-    $related_test_id,  // ✅ Auto-generated, NOT from form
-    $submission_date ?: null,
-    $received_by ?: null,
-    $test_date ?: null,
-    $test_report_no,   // ✅ Auto-generated, NOT from form
-    $parameters_tested ?: null,
-    $observed_output ?: null,
-    $result_val ?: null,
-    $certification_status ?: null,
-    $remarks ?: null,
-    $documents_attached ?: null,
-    $uploaded_report_path ?: null,
-    $tested_by_cpri ?: null,
-    $decision_date ?: null
-]);
+            $stmt->execute([
+                $product_id, $related_test_id, $submission_date ?: null, $received_by ?: null,
+                $test_date ?: null, $test_report_no, $parameters_tested ?: null, $observed_output ?: null,
+                $result_val, $certification_status, $remarks ?: null, $documents_attached ?: null,
+                $uploaded_report_path ?: null, $tested_by_cpri ?: null, $decision_date ?: null
+            ]);
 
+            // Insert into re_manufacture if failed
+            if (strtolower($result_val) === 'failed') {
+                $stmt2 = $pdo->prepare("INSERT INTO re_manufacture (product_id, remarks, created_at, updated_at)
+                                        VALUES (?, ?, NOW(), NOW())");
+                $stmt2->execute([$product_id, 'CPRI test failed. Sent for re-manufacture.']);
+            }
 
-        if ($res) {
-            echo "<script>alert('CPRI Test record added successfully!'); location.assign('add_cpri_test.php');</script>";
+            echo "<script>alert('CPRI Test record added successfully!'); window.location.href='add_cpri_test.php';</script>";
             exit;
-        } else {
-            $errors[] = "Failed to insert the test record.";
+
+        } catch (PDOException $e) {
+            echo "<script>alert('Database Error: " . addslashes($e->getMessage()) . "');</script>";
+        }
+    } else {
+        foreach ($errors as $err) {
+            echo "<script>alert('Error: " . addslashes($err) . "');</script>";
         }
     }
+}
+
+
 
 
 
@@ -447,10 +434,10 @@ $failedProducts = array_filter($allProducts, function($p) use ($passedProductIds
 
 // **New Step: Get products already added in re-manufacture**
 $addedRemanufactureProductIds = $pdo->query("
-    SELECT DISTINCT `Re-Product_id` FROM `re-manufacture`
+    SELECT DISTINCT `Re-Product_id` FROM `re_manufacture`
 ")->fetchAll(PDO::FETCH_COLUMN);
 
-// Step 4: Filter failed products to exclude those already added to re-manufacture
+// Step 4: Filter failed products to exclude those already added to re_manufacture
 $availableProductsForRemanufacture = array_filter($failedProducts, function($p) use ($addedRemanufactureProductIds) {
     return !in_array($p['product_id'], $addedRemanufactureProductIds);
 });
@@ -487,7 +474,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remanufactureForm']))
 }
 
 
-//ADD LAB TEST
+                                            //ADD LAB TEST
+
+
+// Enable error reporting
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Step 1: Saare products uthao
 $allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
@@ -510,17 +501,19 @@ $departments = $pdo->query("SELECT * FROM departments")->fetchAll(PDO::FETCH_ASS
 $testers = $pdo->query("SELECT * FROM testers")->fetchAll(PDO::FETCH_ASSOC);
 
 // Step 5: Form submit hone pe insert karo
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['labTest'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['labTest'])) {
     try {
+        $now = date('Y-m-d H:i:s');
+
         $stmt = $pdo->prepare("
             INSERT INTO lab_test (
                 product_id, testing_type_id, department_id, tester_id, test_date, 
                 test_start_time, test_end_time, criteria_tested, observed_output, expected_output, 
-                result, remarks,   created_at, updated_at
+                result, remarks, created_at, updated_at
             ) VALUES (
                 :product_id, :testing_type_id, :department_id, :tester_id, :test_date, 
                 :test_start_time, :test_end_time, :criteria_tested, :observed_output, :expected_output, 
-                :result, :remarks ,   :created_at, :updated_at
+                :result, :remarks, :created_at, :updated_at
             )
         ");
 
@@ -537,23 +530,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['labTest'])) {
             ':expected_output'   => $_POST['expected_output'],
             ':result'            => $_POST['result'],
             ':remarks'           => $_POST['remarks'],
-            
-            ':created_at'        => $_POST['created_at'],
-            ':updated_at'        => $_POST['updated_at']
+            ':created_at'        => $now,
+            ':updated_at'        => $now
         ]);
 
         echo "<script>alert('Test successfully added!'); window.location.href='add_lab_test.php';</script>";
         exit;
 
     } catch (PDOException $e) {
-        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
+        echo "<script>alert('Database Error: " . $e->getMessage() . "');</script>";
     }
 }
 
 
-                                           //ADD PRODUCT
 
-                                           // Functions to generate random codes
+
+                                                //ADD PRODUCT
+
+      // Generate Random Codes Only On First Load
 function generateRandomReviseCode() {
     return 'R' . rand(1, 99);
 }
@@ -562,25 +556,23 @@ function generateRandomManufactureNo() {
     return 'MF' . str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
 }
 
-// Initialize variables for form display and errors
+// Initialize variables
 $product_name = '';
 $product_type_id = '';
 $manufacture_date = '';
 $productNameErr = $productTypeIdErr = $manufactureDateErr = '';
 
 if (!isset($_POST['addproduct'])) {
-    // Generate codes only on initial page load (not on form submit)
+    // Codes generate only once on page load
     $revise_code = generateRandomReviseCode();
     $manufacture_no = generateRandomManufactureNo();
-} 
+}
 
 if (isset($_POST['addproduct'])) {
-    // Use posted values
+    // Form values
     $product_name = $_POST['product_name'] ?? '';
     $product_type_id = $_POST['product_type_id'] ?? null;
     $manufacture_date = $_POST['manufacture_date'] ?? '';
-
-    // Get revise_code and manufacture_no from hidden inputs in form
     $revise_code = $_POST['revise_code'] ?? '';
     $manufacture_no = $_POST['manufacture_no'] ?? '';
 
@@ -592,10 +584,12 @@ if (isset($_POST['addproduct'])) {
     if (empty($product_type_id)) {
         $errors['productTypeIdErr'] = "Product Type is required";
     }
-    // (Optional) Validate manufacture_date if needed
 
     if (empty($errors)) {
-        $stmt = $pdo->prepare("INSERT INTO products (product_name, product_type_id, revise_code, manufacture_no, manufacture_date) VALUES (?, ?, ?, ?, ?)");
+        // Insert into DB (product_id is auto-generated by trigger)
+        $stmt = $pdo->prepare("INSERT INTO products 
+            (product_name, product_type_id, revise_code, manufacture_no, manufacture_date) 
+            VALUES (?, ?, ?, ?, ?)");
         $result = $stmt->execute([
             $product_name,
             $product_type_id,
@@ -611,7 +605,7 @@ if (isset($_POST['addproduct'])) {
             echo "<div class='alert alert-danger'>Failed to add product.</div>";
         }
     } else {
-        // Show errors on form
+        // Populate error variables for form
         foreach ($errors as $key => $msg) {
             $$key = $msg;
         }
@@ -670,3 +664,33 @@ if (isset($_POST['addTestingType'])) {
 // Fetch departments from database for dropdown
 $deptStmt = $pdo->query("SELECT department_id, dept_name FROM departments ORDER BY dept_name ASC");
 $departments = $deptStmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+                                       //ADVANCE SEARCH OPTION
+
+
+                                       // query.php
+
+// For view_records.php
+if (isset($_GET['search']) && $_GET['search'] !== '') {
+    $search = '%' . $_GET['search'] . '%';
+    $stmt = $pdo->prepare("
+        SELECT p.*, pt.type_name
+        FROM products p
+        LEFT JOIN product_types pt ON p.product_type_id = pt.product_type_id
+        WHERE p.product_id LIKE ? OR p.product_name LIKE ?
+        ORDER BY p.created_at DESC
+    ");
+    $stmt->execute([$search, $search]);
+} else {
+    $stmt = $pdo->prepare("
+        SELECT p.*, pt.type_name
+        FROM products p
+        LEFT JOIN product_types pt ON p.product_type_id = pt.product_type_id
+        ORDER BY p.created_at DESC
+    ");
+    $stmt->execute();
+}
+
+$allProducts = $stmt->fetchAll();
+

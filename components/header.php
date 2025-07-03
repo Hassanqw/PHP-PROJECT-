@@ -1,7 +1,5 @@
 <!doctype html>
 <html lang="en">
-
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,14 +9,124 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="Build beautiful datepickers perfectly integrated in the general style of the application.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <!-- Disable tap highlight on IE -->
     <meta name="msapplication-tap-highlight" content="no">
 
-<link href="main.d810cf0ae7f39f28f336.css" rel="stylesheet"></head>
+<link href="main.d810cf0ae7f39f28f336.css" rel="stylesheet">
+<style>
+        .sidebar {
+            background-color: #1a202c;
+            color: #e2e8f0;
+            height: 100vh;
+            width: 250px;
+            transition: width 0.3s ease;
+            position: fixed;
+            overflow-y: auto;
+        }
+        .sidebar.collapsed {
+            width: 80px;
+        }
+        .sidebar.collapsed .sidebar-text {
+            display: none;
+            
+        }
+        .sidebar-text{
+            margin-left: 50px;
+        }
+        .sidebar.collapsed .logo-src {
+            background-size: 40px;
+            margin-left: 40px;
+        }
+        .sidebar .hamburger {
+            color: #e2e8f0;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .sidebar .vertical-nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar .vertical-nav-menu li {
+            position: relative;
+        }
+        .sidebar .vertical-nav-menu a {
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+        .sidebar .vertical-nav-menu a .metismenu-icon {
+            margin-right: 10px; /* Added space between icon and text */
+        }
+        .sidebar .vertical-nav-menu a:hover {
+            background-color: #38b2ac;
+            color: #fff;
+        }
+        .sidebar .vertical-nav-menu .app-sidebar__heading {
+            padding: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #4a5568;
+        }
+        .sidebar .vertical-nav-menu ul {
+            list-style: none;
+            padding-left: 20px;
+            display: none;
+        }
+        .sidebar .vertical-nav-menu ul.open {
+            display: block;
+        }
+        .sidebar .vertical-nav-menu .metismenu-state-icon {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+        .sidebar .vertical-nav-menu .metismenu-state-icon.rotate {
+            transform: rotate(-180deg);
+        }
+        .app-container.closed-sidebar .app-sidebar {
+    width: 80px;
+    transition: all 0.3s ease;
+}
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.fixed-header .app-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.fixed-sidebar .sidebar {
+  position: fixed;
+  height: 100vh;
+  z-index: 99;
+}
+
+/* Adjust content area based on fixed elements */
+.fixed-header ~ .app-main {
+  padding-top: [header-height];
+}
+.fixed-sidebar ~ .app-main {
+  margin-left: [sidebar-width];
+}
+.app-container.closed-sidebar .sidebar {
+  width: 80px;
+}
+.app-container.closed-sidebar ~ .app-main {
+  margin-left: 80px;
+}
+
+    </style>
+</head>
 
 <body>
-    <div class="app-container app-theme-white  fixed-header fixed-sidebar">
+    <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
                 <div class="logo-src"></div>
@@ -1147,170 +1255,123 @@ if (isset($_SESSION['adminEmail'])) {
                 </div>
             </div>
         </div>       
-                <div class="app-sidebar sidebar-shadow">
-                    <div class="app-header__logo">
-                        <div class="logo-src"></div>
-                        <div class="header__pane ml-auto">
-                            <div>
-                                <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
-                                    <span class="hamburger-box">
-                                        <span class="hamburger-inner"></span>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="app-header__mobile-menu">
-                        <div>
-                            <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
-                                <span class="hamburger-box">
-                                    <span class="hamburger-inner"></span>
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="app-header__menu">
-                        <span>
-                            <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
-                                <span class="btn-icon-wrapper">
-                                    <i class="fa fa-ellipsis-v fa-w-6"></i>
-                                </span>
-                            </button>
-                        </span>
-                    </div>    <div class="scrollbar-sidebar">
-                        <div class="app-sidebar__inner">
-                            <ul class="vertical-nav-menu">
-                                <li class="app-sidebar__heading">Menu</li>
-                                <li      >
-                                    <a href="#">
-                                        <i class="metismenu-icon pe-7s-rocket"></i>Dashboards
-                                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                                    </a>
-                                    <ul      >
-                                        <li>
-                                            <a href="index.php" >
-                                                <i class="metismenu-icon"></i>Analytics
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="dashboards-commerce.php" >
-                                                <i class="metismenu-icon"></i>Commerce
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="dashboards-sales.php" >
-                                                <i class="metismenu-icon">
-                                                </i>Sales
-                                            </a>
-                                        </li>
-                                        <li  >
-                                            <a href="#">
-                                                <i class="metismenu-icon"></i> Minimal
-                                                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                                            </a>
-                                            <ul  >
-                                                <li>
-                                                    <a href="dashboards-minimal-1.php" >
-                                                        <i class="metismenu-icon"></i>Variation 1
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="dashboards-minimal-2.php" >
-                                                        <i class="metismenu-icon"></i>Variation 2
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="dashboards-crm.php" >
-                                                <i class="metismenu-icon"></i> CRM
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                               
-                                        <li>
-                                            <a href="index.php" >
-                                                <i class="metismenu-icon"></i> Login
-                                            </a>
-                                        </li>
-                                        <!-- <li>
-                                            <a href="addCategory.php" >
-                                                <i class="metismenu-icon"></i>Add Category
-                                            </a>
-                                        </li> -->
-                                        <li>
-                                            <a href="add_product_types.php" >
-                                                <i class="metismenu-icon"></i>Add Product Type
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="re_manufacture.php" >
-                                                <i class="metismenu-icon"></i>Re Manufacture
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="testing_types.php" >
-                                                <i class="metismenu-icon"></i>Testing Types
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="add_lab_test.php" >
-                                                <i class="metismenu-icon"></i>Add Lab Test
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="add_tester.php" >
-                                                <i class="metismenu-icon"></i>Add Tester
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="addProduct.php" >
-                                                <i class="metismenu-icon"></i>Add Product
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="add_department.php" >
-                                                <i class="metismenu-icon"></i>Add Department
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="add_cpri_test.php" >
-                                                <i class="metismenu-icon"></i>Add CPRI Test
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="pages-register.php" >
-                                                <i class="metismenu-icon"></i>Register
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="pages-register-boxed.php" >
-                                                <i class="metismenu-icon"></i>Register Boxed
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="pages-forgot-password.php" >
-                                                <i class="metismenu-icon"></i>Forgot Password
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="pages-forgot-password-boxed.php" >
-                                                <i class="metismenu-icon"></i>Forgot Password Boxed
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                
-                                          
-                                          
-                                                                         
-                            </ul>
-                        </div>
-                    </div>
-</div>
-</div>
-</div>
+           
+    <div class="sidebar" id="sidebar">
+        <div class="app-header__logo flex items-center justify-between px-4 py-2">
+            <div class="logo-src"></div>
+            <button type="button" class="hamburger focus:outline-none" id="toggleSidebar">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+        <div class="scrollbar-sidebar">
+            <div class="app-sidebar__inner">
+                <ul class="vertical-nav-menu">
+                    <li class="app-sidebar__heading">Menu</li>
+                    
+                   
+                    <li>
+                        <a href="add_product_types.php">
+                            <i class="metismenu-icon fas fa-plus-circle"></i>
+                            <span class="sidebar-text">Add Product Type</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="re_manufacture.php">
+                            <i class="metismenu-icon fas fa-industry"></i>
+                            <span class="sidebar-text">Re Manufacture</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="testing_types.php">
+                            <i class="metismenu-icon fas fa-vial"></i>
+                            <span class="sidebar-text">Testing Types</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add_lab_test.php">
+                            <i class="metismenu-icon fas fa-flask"></i>
+                            <span class="sidebar-text">Add Lab Test</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add_tester.php">
+                            <i class="metismenu-icon fas fa-user-check"></i>
+                            <span class="sidebar-text">Add Tester</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="addProduct.php">
+                            <i class="metismenu-icon fas fa-box"></i>
+                            <span class="sidebar-text">Add Product</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add_department.php">
+                            <i class="metismenu-icon fas fa-building"></i>
+                            <span class="sidebar-text">Add Department</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="add_cpri_test.php">
+                            <i class="metismenu-icon fas fa-clipboard-check"></i>
+                            <span class="sidebar-text">Add CPRI Test</span>
+                        </a>
+                    </li>
+                   
+                    <li>
+                        <a href="view_records.php">
+                            <i class="metismenu-icon fas fa-table"></i>
+                            <span class="sidebar-text">View Records</span>
+                        </a>
+                    </li>
+                     <li>
+                        <a href="index.php">
+                            <i class="metismenu-icon fas fa-sign-in-alt"></i>
+                            <span class="sidebar-text">Login</span>
+                        </a>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Toggle sidebar collapse/expand
+document.getElementById('toggleSidebar').addEventListener('click', function() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.querySelector('.app-container').classList.toggle('closed-sidebar');
+});
+
+// Toggle submenus
+document.querySelectorAll('.toggle-submenu').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const submenu = this.nextElementSibling;
+        const icon = this.querySelector('.metismenu-state-icon');
+        
+        // Close other open submenus at same level
+        const parentLi = this.closest('li');
+        const parentUl = parentLi.parentElement;
+        parentUl.querySelectorAll('li > ul.open').forEach(openSubmenu => {
+            if (openSubmenu !== submenu) {
+                openSubmenu.classList.remove('open');
+                openSubmenu.previousElementSibling.querySelector('.metismenu-state-icon').classList.remove('rotate');
+            }
+        });
+        
+        submenu.classList.toggle('open');
+        icon.classList.toggle('rotate');
+    });
+});
+
+// Mobile responsive behavior
+window.addEventListener('resize', function() {
+    const sidebar = document.getElementById('sidebar');
+    if (window.innerWidth > 768) {
+        sidebar.classList.remove('open');
+    }
+});
 
 
-
+    </script>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>

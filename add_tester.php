@@ -4,10 +4,10 @@ include("components/header.php");
 ?>
 
 <style>
+
     .container{
         width: 700px;
-        margin-top:  -500px ; 
-         margin-left:  350px ; 
+        margin-top: 150px; 
     }
 </style>
 
@@ -50,7 +50,7 @@ include("components/header.php");
                 <?php
                 $departments = $pdo->query("SELECT * FROM departments")->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($departments as $dept) {
-                    echo "<option value='{$dept['department_id']}'>{$dept['department_name']}</option>";
+                    echo "<option value='{$dept['department_id']}'>{$dept['dept_name']}</option>";
                 }
                 ?>
             </select>

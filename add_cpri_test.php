@@ -5,11 +5,10 @@ include("components/header.php");
 ?>
 <style>
 
-     .container{
+    .container{
         width: 700px;
-        margin-top:  -600px ; 
+        margin-top: 150px; 
     }
-
 </style>
 
 <div class="container">
@@ -42,7 +41,7 @@ include("components/header.php");
         
         <!-- Product (Passed in lab_test and not tested in cpri_tests) -->
      <select name="product_id" class="form-control" required>
-    <option value="">Select Failed Product</option>
+    <option value="">Select Product</option>
     <?php foreach ($failedProducts as $product): ?>
         <option value="<?= htmlspecialchars($product['product_id']) ?>">
             <?= htmlspecialchars($product['product_name']) ?>
@@ -56,7 +55,7 @@ include("components/header.php");
         <!-- Submission Date -->
         <div class="mb-3">
             <label class="form-label">Submission Date</label>
-            <input type="date" name="submission_date" class="form-control" value="<?= htmlspecialchars($_POST['submission_date'] ?? '') ?>">
+            <input type="date" name="submission_date" class="form-control"  max="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['submission_date'] ?? '') ?>"Required>
         </div>
 
         <!-- Received By -->
@@ -68,7 +67,7 @@ include("components/header.php");
         <!-- Test Date -->
         <div class="mb-3">
             <label class="form-label">Test Date</label>
-            <input type="date" name="test_date" class="form-control" value="<?= htmlspecialchars($_POST['test_date'] ?? '') ?>">
+            <input type="date" name="test_date" class="form-control"  max="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['test_date'] ?? '') ?>"Required>
         </div>
 
         <!-- Parameters Tested -->
@@ -83,35 +82,32 @@ include("components/header.php");
             <textarea name="observed_output" class="form-control"><?= htmlspecialchars($_POST['observed_output'] ?? '') ?></textarea>
         </div>
 
-        <!-- Result -->
-        <div class="mb-3">
-            <label class="form-label">Result</label>
-            <select name="result" class="form-control">
-                <option value="Passed" <?= (($_POST['result'] ?? '') === 'Passed') ? 'selected' : '' ?>>Passed</option>
-                <option value="Failed" <?= (($_POST['result'] ?? '') === 'Failed') ? 'selected' : '' ?>>Failed</option>
-            </select>
-        </div>
+       <!-- Result -->
+<div class="mb-3">
+    <label class="form-label">Result <span class="text-danger">*</span></label>
+    <select name="result" class="form-control" required>
+        <option value="">-- Select Result --</option>
+        <option value="Passed">Passed</option>
+        <option value="Failed">Failed</option>
+    </select>
+</div>
 
-        <!-- Certification Status -->
-        <div class="mb-3">
-            <label class="form-label">Certification Status</label>
-            <select name="certification_status" class="form-control">
-                <option value="Certified" <?= (($_POST['certification_status'] ?? '') === 'Certified') ? 'selected' : '' ?>>Certified</option>
-                <option value="Rejected" <?= (($_POST['certification_status'] ?? '') === 'Rejected') ? 'selected' : '' ?>>Rejected</option>
-                <option value="Pending" <?= (($_POST['certification_status'] ?? '') === 'Pending') ? 'selected' : '' ?>>Pending</option>
-            </select>
-        </div>
+<!-- Certification Status -->
+<div class="mb-3">
+    <label class="form-label">Certification Status <span class="text-danger">*</span></label>
+    <select name="certification_status" class="form-control" required>
+        <option value="">-- Select Status --</option>
+        <option value="Certified">Certified</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Pending">Pending</option>
+    </select>
+</div>
+
 
         <!-- Remarks -->
         <div class="mb-3">
             <label class="form-label">Remarks</label>
             <textarea name="remarks" class="form-control"><?= htmlspecialchars($_POST['remarks'] ?? '') ?></textarea>
-        </div>
-
-        <!-- Documents Attached -->
-        <div class="mb-3">
-            <label class="form-label">Documents Attached</label>
-            <input type="text" name="documents_attached" class="form-control" placeholder="e.g. Report.pdf, Sheet.png" value="<?= htmlspecialchars($_POST['documents_attached'] ?? '') ?>">
         </div>
 
         <!-- Upload Report -->
@@ -129,7 +125,7 @@ include("components/header.php");
         <!-- Decision Date -->
         <div class="mb-3">
             <label class="form-label">Decision Date</label>
-            <input type="date" name="decision_date" class="form-control" value="<?= htmlspecialchars($_POST['decision_date'] ?? '') ?>">
+            <input type="date" name="decision_date" class="form-control" max="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['decision_date'] ?? '') ?>" Required>
         </div>
 
         <button type="submit" name="add_cpri_test" class="btn btn-primary w-100">Submit CPRI Test</button>
