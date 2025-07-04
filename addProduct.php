@@ -71,7 +71,7 @@ include("components/header.php");
         <!-- Manufacture Date -->
         <div class="mb-3">
             <label for="manufactureDate" class="form-label fw-bold">Manufacture Date</label>
-            <input type="date" class="form-control form-control-lg" id="manufactureDate" name="manufacture_date" max="<?= date('Y-m-d'); ?>" value="<?php echo htmlspecialchars($manufacture_date); ?>required>
+            <input type="date" class="form-control form-control-lg" id="manufactureDate" name="manufacture_date" min="<?= date('Y-m-d'); ?>" value="<?php echo htmlspecialchars($manufacture_date); ?>required>
             <small class="text-danger"><?php echo $manufactureDateErr ?? ''; ?></small>
         </div>
 

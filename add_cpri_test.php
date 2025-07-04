@@ -39,23 +39,21 @@ include("components/header.php");
 
     <form method="POST" enctype="multipart/form-data">
         
-        <!-- Product (Passed in lab_test and not tested in cpri_tests) -->
-     <select name="product_id" class="form-control" required>
-    <option value="">Select Product</option>
-    <?php foreach ($failedProducts as $product): ?>
+<select name="product_id" class="form-control">
+    <option value="">-- Select Product --</option>
+    <?php foreach ($passedProducts as $product): ?>
         <option value="<?= htmlspecialchars($product['product_id']) ?>">
             <?= htmlspecialchars($product['product_name']) ?>
         </option>
     <?php endforeach; ?>
 </select>
 
-
       
 
         <!-- Submission Date -->
         <div class="mb-3">
             <label class="form-label">Submission Date</label>
-            <input type="date" name="submission_date" class="form-control"  max="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['submission_date'] ?? '') ?>"Required>
+            <input type="date" name="submission_date" class="form-control"  min="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['submission_date'] ?? '') ?>"Required>
         </div>
 
         <!-- Received By -->
@@ -67,7 +65,7 @@ include("components/header.php");
         <!-- Test Date -->
         <div class="mb-3">
             <label class="form-label">Test Date</label>
-            <input type="date" name="test_date" class="form-control"  max="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['test_date'] ?? '') ?>"Required>
+            <input type="date" name="test_date" class="form-control"  min="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['test_date'] ?? '') ?>"Required>
         </div>
 
         <!-- Parameters Tested -->
@@ -125,7 +123,7 @@ include("components/header.php");
         <!-- Decision Date -->
         <div class="mb-3">
             <label class="form-label">Decision Date</label>
-            <input type="date" name="decision_date" class="form-control" max="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['decision_date'] ?? '') ?>" Required>
+            <input type="date" name="decision_date" class="form-control" min="<?= date('Y-m-d'); ?>" value="<?= htmlspecialchars($_POST['decision_date'] ?? '') ?>" Required>
         </div>
 
         <button type="submit" name="add_cpri_test" class="btn btn-primary w-100">Submit CPRI Test</button>

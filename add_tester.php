@@ -1,6 +1,7 @@
 <?php
 include("php/query.php"); // your DB connection
 include("components/header.php");
+
 ?>
 
 <style>
@@ -42,6 +43,17 @@ include("components/header.php");
             <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address">
         </div>
 
+       <!-- Password -->
+<div class="mb-3">
+    <label for="password" class="form-label fw-bold">Password</label>
+    <input type="password" class="form-control" id="password" name="password" placeholder="Set password for tester">
+    <div class="form-check mt-2">
+        <input type="checkbox" class="form-check-input" id="showPassword" onclick="togglePassword()">
+        <label class="form-check-label" for="showPassword">Show Password</label>
+    </div>
+</div>
+
+
         <!-- Department -->
         <div class="mb-3">
             <label for="department" class="form-label fw-bold">Department</label>
@@ -58,6 +70,12 @@ include("components/header.php");
         <button name="addTester" class="btn btn-primary w-100">Add Tester</button>
     </form>
 </div>
+<script>
+function togglePassword() {
+    var passField = document.getElementById("password");
+    passField.type = (passField.type === "password") ? "text" : "password";
+}
+</script>
 
 <?php include("components/footer.php"); 
 ?>

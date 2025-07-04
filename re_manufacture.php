@@ -2,6 +2,91 @@
 include("php/query.php");
 include("components/header.php");
 
+$errors = [];
+
+// ✅ re-manufacture Submission Logic
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Re-Submit'])) {
+    $product_id = trim($_POST['product_id'] ?? '');
+    $tester_id     = trim($_POST['Tested_by'] ?? '');
+    $department_id = trim($_POST['Department'] ?? '');
+
+    if (empty($product_id))    $errors[] = "Please select a product.";
+    if (empty($tester_id))     $errors[] = "Please select a tester.";
+    if (empty($department_id)) $errors[] = "Please select a department.";
+
+    if (empty($errors)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO `re-manufacture`
+                (re_product_id, Tested_by, Department, remarks, created_at, updated_at) 
+                VALUES (?, ?, ?, 're-manufactured manually.', NOW(), NOW())");
+            $stmt->execute([$product_id, $tester_id, $department_id]);
+
+            echo "<script>alert('re-manufacture record added successfully!'); window.location.href='re_manufacture.php';</script>";
+            exit;
+        } catch (PDOException $e) {
+            $errors[] = "Database Error: " . $e->getMessage();
+        } 
+    }
+}
+
+// ✅ 1. Get all products
+$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
+
+// Enable error reporting
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// 1. Saare products uthao
+$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
+
+// 2. Lab ya CPRI mein fail huwe products ke IDs
+$failLabTestIds = $pdo->query("SELECT DISTINCT product_id FROM lab_test WHERE LOWER(result) = 'fail'")->fetchAll(PDO::FETCH_COLUMN);
+$failCpriIds = $pdo->query("SELECT DISTINCT product_id FROM cpri_tests WHERE LOWER(result) = 'fail'")->fetchAll(PDO::FETCH_COLUMN);
+$failedProductIds = array_unique(array_merge($failLabTestIds, $failCpriIds));
+
+// 3. Jo already re-manufacture ho chuke hain (Tested_by aur Department bhar chuke hain)
+$alreadyRemanufacturedIds = $pdo->query("
+    SELECT DISTINCT re_product_id 
+    FROM `re-manufacture`
+    WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
+")->fetchAll(PDO::FETCH_COLUMN);
+
+// 4. Filter karo sirf un products ko jo fail hue hain but abhi retest nahi huwe
+$reTestProducts = array_filter($allProducts, function ($product) use ($failedProductIds, $alreadyRemanufacturedIds) {
+    return in_array($product['product_id'], $failedProductIds) &&
+           !in_array($product['product_id'], $alreadyRemanufacturedIds);
+});
+
+// ✅ 2. Get products that failed in Lab Test
+$failLabTestIds = $pdo->query("
+    SELECT DISTINCT product_id 
+    FROM lab_test 
+    WHERE LOWER(result) = 'fail'
+")->fetchAll(PDO::FETCH_COLUMN);
+
+// ✅ 3. Get products that failed in CPRI Test
+$failCpriTestIds = $pdo->query("
+    SELECT DISTINCT product_id 
+    FROM cpri_tests 
+    WHERE LOWER(result) = 'fail'
+")->fetchAll(PDO::FETCH_COLUMN);
+
+// ✅ 4. Combine all failed product IDs (lab + cpri)
+$failedProductIds = array_unique(array_merge($failLabTestIds, $failCpriTestIds));
+
+// ✅ 5. Get already re-manufactured products (tester and department filled)
+$alreadyRetestedIds = $pdo->query("
+    SELECT DISTINCT re_product_id 
+    FROM `re-manufacture` 
+    WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
+")->fetchAll(PDO::FETCH_COLUMN);
+
+// ✅ 6. Final list: products that failed and NOT fully re-tested
+$reTestProducts = array_filter($allProducts, function ($product) use ($failedProductIds, $alreadyRetestedIds) {
+    return in_array($product['product_id'], $failedProductIds) &&
+           !in_array($product['product_id'], $alreadyRetestedIds);
+});
+
+
 
 ?>
 
@@ -44,41 +129,61 @@ label {
                 </div>
             </div>
         </div>
-    <form method="POST">
-      <select name="Re_Product_id" id="Re_Product_id" class="form-control" required>
-    <option value="">Select Product</option>
-    <?php foreach ($availableProductsForRemanufacture as $p): ?>
-        <option value="<?= htmlspecialchars($p['product_id']) ?>">
-            <?= htmlspecialchars($p['product_name']) ?>
+        
+  
+
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <ul>
+            <?php foreach ($errors as $err): ?>
+                <li><?= htmlspecialchars($err) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
+<form method="POST">
+  <!-- Product Dropdown -->
+<label>Failed Product</label>
+<select name="product_id" class="form-control" required>
+    <option value="">-- Select Failed Product --</option>
+    <?php foreach ($reTestProducts as $product): ?>
+        <option value="<?= htmlspecialchars($product['product_id']) ?>">
+            <?= htmlspecialchars($product['product_name']) ?>
         </option>
     <?php endforeach; ?>
 </select>
 
 
-        <!-- Tested By -->
-        <label for="Tested_by">Tested By</label>
-        <select name="Tested_by" id="Tested_by" class="form-control" required>
-            <option value="">Select Tester</option>
-            <?php foreach ($testers as $t): ?>
-                <option value="<?= htmlspecialchars($t['tester_id']) ?>">
-                    <?= htmlspecialchars($t['name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
 
-        <!-- Department -->
-        <label for="Department">Department</label>
-        <select name="Department" id="Department" class="form-control" required>
-            <option value="">Select Department</option>
-            <?php foreach ($departments as $d): ?>
-                <option value="<?= htmlspecialchars($d['department_id']) ?>">
-                    <?= htmlspecialchars($d['dept_name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
 
-        <button type="submit" name="remanufactureForm" class="btn btn-primary">Submit</button>
-    </form>
+    <!-- Tester Dropdown -->
+    <label>Tested By</label>
+    <select name="Tested_by" class="form-control" required>
+        <option value="">Select Tester</option>
+        <?php foreach ($testers as $t): ?>
+            <option value="<?= htmlspecialchars($t['tester_id']) ?>">
+                <?= htmlspecialchars($t['name']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <!-- Department Dropdown -->
+    <label>Department</label>
+    <select name="Department" class="form-control" required>
+        <option value="">Select Department</option>
+        <?php foreach ($departments as $d): ?>
+            <option value="<?= htmlspecialchars($d['department_id']) ?>">
+                <?= htmlspecialchars($d['dept_name']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <br>
+    <button type="submit" name="Re-Submit" class="btn btn-primary">Submit</button>
+</form>
+
+
 </div>
 
 <?php include("components/footer.php"); ?>
