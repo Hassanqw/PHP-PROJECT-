@@ -2,11 +2,12 @@
 include("php/query.php");
 include("components/header.php");
 
+
 $errors = [];
 
-// ✅ re-manufacture Submission Logic
+// Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Re-Submit'])) {
-    $product_id = trim($_POST['product_id'] ?? '');
+    $product_id    = trim($_POST['product_id'] ?? '');
     $tester_id     = trim($_POST['Tested_by'] ?? '');
     $department_id = trim($_POST['Department'] ?? '');
 
@@ -17,74 +18,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Re-Submit'])) {
     if (empty($errors)) {
         try {
             $stmt = $pdo->prepare("INSERT INTO `re-manufacture`
-                (re_product_id, Tested_by, Department, remarks, created_at, updated_at) 
+                (re_product_id, Tested_by, Department, remarks, created_at, updated_at)
                 VALUES (?, ?, ?, 're-manufactured manually.', NOW(), NOW())");
             $stmt->execute([$product_id, $tester_id, $department_id]);
-
-            echo "<script>alert('re-manufacture record added successfully!'); window.location.href='re_manufacture.php';</script>";
+            echo "<script>alert('✅ Re-manufacture record added!'); window.location.href='re_manufacture.php';</script>";
             exit;
         } catch (PDOException $e) {
             $errors[] = "Database Error: " . $e->getMessage();
-        } 
+        }
     }
 }
 
-// ✅ 1. Get all products
-$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
+// ✅ Get all failed products (lab or CPRI)
+$failedLab = $pdo->query("SELECT DISTINCT product_id FROM lab_test WHERE LOWER(result) = 'Fail'")->fetchAll(PDO::FETCH_COLUMN);
+$failedCPRI = $pdo->query("SELECT DISTINCT product_id FROM cpri_tests WHERE LOWER(result) = 'Fail'")->fetchAll(PDO::FETCH_COLUMN);
+$failed = array_unique(array_merge($failedLab, $failedCPRI));
 
-// Enable error reporting
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-// 1. Saare products uthao
-$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
-
-// 2. Lab ya CPRI mein fail huwe products ke IDs
-$failLabTestIds = $pdo->query("SELECT DISTINCT product_id FROM lab_test WHERE LOWER(result) = 'fail'")->fetchAll(PDO::FETCH_COLUMN);
-$failCpriIds = $pdo->query("SELECT DISTINCT product_id FROM cpri_tests WHERE LOWER(result) = 'fail'")->fetchAll(PDO::FETCH_COLUMN);
-$failedProductIds = array_unique(array_merge($failLabTestIds, $failCpriIds));
-
-// 3. Jo already re-manufacture ho chuke hain (Tested_by aur Department bhar chuke hain)
-$alreadyRemanufacturedIds = $pdo->query("
-    SELECT DISTINCT re_product_id 
-    FROM `re-manufacture`
+// ✅ Exclude already retested
+$alreadyRetested = $pdo->query("
+    SELECT DISTINCT re_product_id FROM `re-manufacture`
     WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
 ")->fetchAll(PDO::FETCH_COLUMN);
 
-// 4. Filter karo sirf un products ko jo fail hue hain but abhi retest nahi huwe
-$reTestProducts = array_filter($allProducts, function ($product) use ($failedProductIds, $alreadyRemanufacturedIds) {
-    return in_array($product['product_id'], $failedProductIds) &&
-           !in_array($product['product_id'], $alreadyRemanufacturedIds);
+// ✅ Get eligible products
+$allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
+$reTestProducts = array_filter($allProducts, function ($p) use ($failed, $alreadyRetested) {
+    return in_array($p['product_id'], $failed) && !in_array($p['product_id'], $alreadyRetested);
 });
 
-// ✅ 2. Get products that failed in Lab Test
-$failLabTestIds = $pdo->query("
-    SELECT DISTINCT product_id 
-    FROM lab_test 
-    WHERE LOWER(result) = 'fail'
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// ✅ 3. Get products that failed in CPRI Test
-$failCpriTestIds = $pdo->query("
-    SELECT DISTINCT product_id 
-    FROM cpri_tests 
-    WHERE LOWER(result) = 'fail'
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// ✅ 4. Combine all failed product IDs (lab + cpri)
-$failedProductIds = array_unique(array_merge($failLabTestIds, $failCpriTestIds));
-
-// ✅ 5. Get already re-manufactured products (tester and department filled)
-$alreadyRetestedIds = $pdo->query("
-    SELECT DISTINCT re_product_id 
-    FROM `re-manufacture` 
-    WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
-")->fetchAll(PDO::FETCH_COLUMN);
-
-// ✅ 6. Final list: products that failed and NOT fully re-tested
-$reTestProducts = array_filter($allProducts, function ($product) use ($failedProductIds, $alreadyRetestedIds) {
-    return in_array($product['product_id'], $failedProductIds) &&
-           !in_array($product['product_id'], $alreadyRetestedIds);
-});
 
 
 
@@ -153,6 +114,7 @@ label {
         </option>
     <?php endforeach; ?>
 </select>
+
 
 
 

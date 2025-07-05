@@ -1,5 +1,5 @@
 <?php
-include("php/query.php"); // your DB connection
+include("php/query.php"); 
 include("components/header.php");
 
 ?>

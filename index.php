@@ -1,6 +1,50 @@
 <?php 
 include("php/query.php");
+include("php/dbcon.php");
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email    = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+
+    if (empty($email) || empty($password)) {
+        $errors[] = "Email and Password are required.";
+    } else {
+        // Admin check
+        $stmtAdmin = $pdo->prepare("SELECT id, name, email, password, 'admin' AS role FROM admin WHERE email = ?");
+        $stmtAdmin->execute([$email]);
+        $admin = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+
+        // Tester check
+        $stmtTester = $pdo->prepare("SELECT tester_id AS id, name, email, password, 'tester' AS role FROM testers WHERE email = ?");
+        $stmtTester->execute([$email]);
+        $tester = $stmtTester->fetch(PDO::FETCH_ASSOC);
+
+        $user = $admin ?: $tester;
+
+        // Validate password
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user'] = [
+                'id'    => $user['id'],
+                'name'  => $user['name'],
+                'email' => $user['email'],
+                'role'  => $user['role']
+            ];
+
+            // Redirect accordingly
+            if ($user['role'] === 'admin') {
+                header("Location: dashboards-commerce.php");
+            } else {
+                header("Location: addProduct.php");
+            }
+            exit;
+        } else {
+            $errors[] = "Invalid email or password.";
+        }
+    }
+}
 ?>
+
 <!doctype html>
 <html lang="en">
 

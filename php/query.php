@@ -1,16 +1,19 @@
 <?php
 include("php/dbcon.php");
+
 session_start();
 
 
 $productNameErr = $productImageNameErr = $createdAtErr = $categoryNameErr = $categoryImageNameErr = $categoryDesErr = "";
 
+
+                                     //ADD PRODUCT TYPE
 $message = "";
 if (isset($_POST["addproductType"])) {
     $type_name = trim($_POST['type_name']);
 
     if (!empty($type_name)) {
-        // Prepare and bind to prevent SQL injection
+        
         $stmt = $pdo->prepare("INSERT INTO product_types (type_name) VALUES (:t)");
         $stmt->bindParam("t", $type_name);
 
@@ -20,86 +23,12 @@ if (isset($_POST["addproductType"])) {
             $message = "<div class='alert alert-danger'>Error adding product type " .  "</div>";
         }
 
-        // $stmt->close();
+        
     } else {
         $message = "<div class='alert alert-warning'>Please enter a product type name.</div>";
     }
 }
-//TESTING TYPES:
-
-// your PDO connection
-// $testName = $departmentId = "";
-// $testNameErr = $departmentIdErr = "";
-
-// if (isset($_POST['addTestingType'])) {
-//     $testName = $_POST['test_name'];
-//     $departmentId = $_POST['department_id'];
-
-//     if (empty($testName)) {
-//         $testNameErr = "Testing Name is required";
-//     }
-
-//     if (empty($departmentId)) {
-//         $departmentIdErr = "Department ID is required";
-//     }
-
-//     if (empty($testNameErr) && empty($departmentIdErr)) {
-//         $stmt = $pdo->prepare("INSERT INTO testing_types (test_name, department_id) VALUES (:test_name, :department_id)");
-//         $stmt->bindParam(":test_name", $testName);
-//         $stmt->bindParam(":department_id", $departmentId);
-//         $stmt->execute();
-
-//         echo "<script>alert('Testing Type Added Successfully'); location.assign('testing_type.php');</script>";
-//     }
-// }
-
-
-//Add Lab Test:
-
-
-
-// if (isset($_POST['labTest'])) {
-
-
-//         $stmt = $pdo->prepare("
-//             INSERT INTO lab_test (
-//                 product_id, testing_type_id, department_id, tester_id, test_date, 
-//                 test_start_time, test_end_time, criteria_tested, observed_output, expected_output, 
-//                 result, remarks, status, is_sent_to_CPRI, test_roll_number, created_at, updated_at
-//             ) VALUES (
-//                 :product_id, :testing_type_id, :department_id, :tester_id, :test_date, 
-//                 :test_start_time, :test_end_time, :criteria_tested, :observed_output, :expected_output, 
-//                 :result, :remarks, :status, :is_sent_to_CPRI, :test_roll_number, :created_at, :updated_at
-//             )
-//         ");
-
-//         $stmt->execute([
-//             ':product_id'        => $_POST['product_id'],
-//             ':testing_type_id'   => $_POST['testing_type_id'],
-//             ':department_id'     => $_POST['department_id'],
-//             ':tester_id'         => $_POST['tester_id'],
-//             ':test_date'         => $_POST['test_date'],
-//             ':test_start_time'   => $_POST['test_start_time'],
-//             ':test_end_time'     => $_POST['test_end_time'],
-//             ':criteria_tested'   => $_POST['criteria_tested'],
-//             ':observed_output'   => $_POST['observed_output'],
-//             ':expected_output'   => $_POST['expected_output'],
-//             ':result'            => $_POST['result'],
-//             ':remarks'           => $_POST['remarks'],
-//             ':status'            => $_POST['status'],
-//             ':is_sent_to_CPRI'   => $_POST['is_sent_to_CPRI'],
-//             ':test_roll_number'  => $_POST['test_roll_number'],
-//             ':created_at'        => $_POST['created_at'],
-//             ':updated_at'        => $_POST['updated_at']
-//         ]);
-
-//         echo "<script>alert('Lab Test added successfully'); window.location.href='add_cpri_test.php';</script>";
-
-
-
-// } 
-
-//                                              //ADD TESTER:
+                                        //ADD TESTER:
 
 
 
@@ -140,51 +69,10 @@ if (isset($_POST['addDepartment'])) {
     }
 }
 
-//resigter form
+
 $userName = $userEmail = $userPassword = $userConfirmPassword = "";
 $userNameErr = $userEmailErr = $userPasswordErr = $userConfirmPasswordErr = "";
-// if(isset($_POST['userRegister'])){
-//     $userName= $_POST['userName'];
-//     $userEmail= $_POST['userEmail'];
-//     $userPassword= $_POST['userPassword'];
-//     $userConfirmPassword= $_POST['userConfirmPassword'];
-//     if(empty($userName)){
-//         $userNameErr = "Name is Required";
-//     }
-//      if(empty($userEmail)){
-//         $userEmailErr = "Email is Required";
-//     }
-//     else{
-//         $query = $pdo->prepare("select * from admin where email = :email");
-//         $query->bindParam('email',$userEmail);
-//         $query->execute();
-//         $user = $query->fetch(PDO::FETCH_ASSOC);
-//         // print_r($user);
-//         // die();
-//             if($user){
-//                 $userEmailErr = "Email is already exist";
-//             }
-//     }
-//      if(empty($userPassword)){
-//         $userPasswordErr = "Password is Required";
-//     }
-//      if(empty($userConfirmPassword)){
-//         $userConfirmPasswordErr = "Confirm Password is Required";
-//     }
-//     else{
-//         if($userPassword != $userConfirmPassword){
-//               $userConfirmPasswordErr = "Confirm Password does not Matched";
-//         }
-//     }
-//     if(empty($userNameErr) && empty($userEmailErr) && empty($userPasswordErr) && empty($userConfirmPasswordErr)){
-//         $query = $pdo->prepare("insert into  (name , email , password) values (:name , :email , :password)");
-//         $query->bindParam('name',$userName);
-//         $query->bindParam('email',$userEmail);
-//         $query->bindParam('password',$userPassword);
-//         $query->execute();
-//         echo "<script>alert('user register');location.assign('pages-login.php')</script>";      
-//     }
-// }
+
 // login Work
 
 $userEmail = $userPassword = "";
@@ -244,10 +132,10 @@ if (isset($_POST['userLogin'])) {
 
 //ADD CPRI
 
+
 $errors = [];
 $uploaded_report_path = null;
 
-// Auto-generate IDs
 function generateRelatedTestId($pdo) {
     $datePrefix = date("Ymd");
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM cpri_tests WHERE DATE(created_at) = CURDATE()");
@@ -263,23 +151,26 @@ function generateTestReportNo($pdo) {
     return 'TRN-' . $year . '-' . str_pad($countThisYear, 4, '0', STR_PAD_LEFT);
 }
 
-// ✅ CPRI Dropdown: Products that passed lab test or re-manufacture and not yet tested in CPRI
+// Products passed lab or re-manufactured, but not in CPRI
 $passedProducts = $pdo->query("
     SELECT p.product_id, p.product_name
     FROM products p
-    WHERE 
+    WHERE (
         p.product_id IN (
             SELECT product_id FROM lab_test
-            WHERE test_id IN (
-                SELECT MAX(test_id) FROM lab_test GROUP BY product_id
-            )
+            WHERE test_id IN (SELECT MAX(test_id) FROM lab_test GROUP BY product_id)
             AND LOWER(result) = 'pass'
         )
-        AND p.product_id NOT IN (
-            SELECT product_id FROM cpri_tests
+        OR
+        p.product_id IN (
+            SELECT re_product_id FROM `re-manufacture`
+            WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
         )
+    )
+    AND p.product_id NOT IN (
+        SELECT product_id FROM cpri_tests
+    )
 ")->fetchAll(PDO::FETCH_ASSOC);
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
     $product_id           = trim($_POST['product_id'] ?? '');
@@ -301,31 +192,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
     if (empty($result_val))           $errors[] = "Result is required.";
     if (empty($certification_status)) $errors[] = "Certification status is required.";
 
-    // ✅ File Upload
     if (isset($_FILES['uploaded_report']) && $_FILES['uploaded_report']['error'] !== UPLOAD_ERR_NO_FILE) {
         $file = $_FILES['uploaded_report'];
         if ($file['error'] === UPLOAD_ERR_OK) {
             $allowed_types = ['application/pdf', 'image/png', 'image/jpeg'];
             $finfo = new finfo(FILEINFO_MIME_TYPE);
             $mime = $finfo->file($file['tmp_name']);
-
             if (!in_array($mime, $allowed_types)) {
-                $errors[] = "File must be PDF, PNG, or JPG.";
+                $errors[] = "Invalid file type.";
             } else {
                 $upload_dir = __DIR__ . '/uploads/reports/';
                 if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
-                $safeName = preg_replace("/[^a-zA-Z0-9_\.-]/", '_', basename($file['name']));
-                $filename = uniqid('report_') . '_' . $safeName;
-                $target_path = $upload_dir . $filename;
-
-                if (move_uploaded_file($file['tmp_name'], $target_path)) {
+                $filename = uniqid('report_') . '_' . preg_replace("/[^a-zA-Z0-9_\.-]/", '_', basename($file['name']));
+                if (move_uploaded_file($file['tmp_name'], $upload_dir . $filename)) {
                     $uploaded_report_path = 'uploads/reports/' . $filename;
                 } else {
-                    $errors[] = "Failed to upload the file.";
+                    $errors[] = "File upload failed.";
                 }
             }
-        } else {
-            $errors[] = "File upload error.";
         }
     }
 
@@ -338,38 +222,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
 
             $stmt->execute([
-                $product_id,
-                $related_test_id,
-                $submission_date ?: null,
-                $received_by ?: null,
-                $test_date ?: null,
-                $test_report_no,
-                $parameters_tested ?: null,
-                $observed_output ?: null,
-                $result_val,
-                $certification_status,
-                $remarks ?: null,
-                $uploaded_report_path ?: null,
-                $tested_by_cpri ?: null,
-                $decision_date ?: null
+                $product_id, $related_test_id, $submission_date ?: null, $received_by ?: null,
+                $test_date ?: null, $test_report_no, $parameters_tested ?: null,
+                $observed_output ?: null, $result_val, $certification_status,
+                $remarks ?: null, $uploaded_report_path ?: null,
+                $tested_by_cpri ?: null, $decision_date ?: null
             ]);
 
-            // ✅ Add to re-manufacture if failed
+            // ✅ Insert into re-manufacture if failed
             if (strtolower($result_val) === 'fail') {
                 $check = $pdo->prepare("SELECT COUNT(*) FROM `re-manufacture` WHERE re_product_id = ?");
-                $check->execute([$product_id]);
-                if ($check->fetchColumn() == 0) {
-                    $stmt2 = $pdo->prepare("INSERT INTO `re-manufacture` 
-                        (re_product_id, remarks, created_at, updated_at)
-                        VALUES (?, ?, NOW(), NOW())");
-                    $stmt2->execute([$product_id, 'CPRI test failed. Sent for re-manufacture.']);
-                }
-                echo "<script>alert('✅ Sent To Re-Manufacturing'); window.location.href='add_cpri_test.php';</script>";
+$check->execute([$product_id]);
+if ($check->fetchColumn() == 0) {
+    $stmt2 = $pdo->prepare("INSERT INTO `re-manufacture` 
+        (re_product_id, remarks, created_at, updated_at)
+        VALUES (?, ?, NOW(), NOW())");
+    $stmt2->execute([$product_id, 'CPRI test failed. Sent for re-manufacture.']);
+}
+
+
+                echo "<script>alert('✅ CPRI Failed: Sent to Re-Manufacture'); window.location.href='add_cpri_test.php';</script>";
             } else {
-                echo "<script>alert('✅ CPRI Test Complete'); window.location.href='add_cpri_test.php';</script>";
+                echo "<script>alert('✅ CPRI Test Added Successfully'); window.location.href='add_cpri_test.php';</script>";
             }
             exit;
-
         } catch (PDOException $e) {
             echo "<script>alert('Database Error: " . addslashes($e->getMessage()) . "');</script>";
         }
@@ -578,28 +454,64 @@ $departments = $deptStmt->fetchAll(PDO::FETCH_ASSOC);
 
 //ADVANCE SEARCH OPTION
 
-
-// query.php
-
-// For view_records.php
 if (isset($_GET['search']) && $_GET['search'] !== '') {
     $search = '%' . $_GET['search'] . '%';
     $stmt = $pdo->prepare("
-        SELECT p.*, pt.type_name
+        SELECT 
+            p.product_id,
+            p.product_name,
+            pt.type_name,
+            p.manufacture_date,
+            t.name AS tester_name,
+            d.dept_name AS department_name
         FROM products p
         LEFT JOIN product_types pt ON p.product_type_id = pt.product_type_id
-        WHERE p.product_id LIKE ? OR p.product_name LIKE ?
+        LEFT JOIN (
+            SELECT product_id, tester_id, department_id
+            FROM lab_test
+            WHERE test_id IN (
+                SELECT MAX(test_id)
+                FROM lab_test
+                GROUP BY product_id
+            )
+        ) lt ON lt.product_id = p.product_id
+        LEFT JOIN testers t ON lt.tester_id = t.tester_id
+        LEFT JOIN departments d ON lt.department_id = d.department_id
+        WHERE 
+            p.product_id LIKE :search 
+            OR p.product_name LIKE :search
+            OR t.name LIKE :search
+            OR d.dept_name LIKE :search
         ORDER BY p.created_at DESC
     ");
-    $stmt->execute([$search, $search]);
+    $stmt->execute(['search' => $search]);
 } else {
     $stmt = $pdo->prepare("
-        SELECT p.*, pt.type_name
+        SELECT 
+            p.product_id,
+            p.product_name,
+            pt.type_name,
+            p.manufacture_date,
+            t.name AS tester_name,
+            d.dept_name AS department_name
         FROM products p
         LEFT JOIN product_types pt ON p.product_type_id = pt.product_type_id
+        LEFT JOIN (
+            SELECT product_id, tester_id, department_id
+            FROM lab_test
+            WHERE test_id IN (
+                SELECT MAX(test_id)
+                FROM lab_test
+                GROUP BY product_id
+            )
+        ) lt ON lt.product_id = p.product_id
+        LEFT JOIN testers t ON lt.tester_id = t.tester_id
+        LEFT JOIN departments d ON lt.department_id = d.department_id
         ORDER BY p.created_at DESC
     ");
     $stmt->execute();
 }
 
 $allProducts = $stmt->fetchAll();
+
+

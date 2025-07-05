@@ -85,8 +85,10 @@ include("components/header.php");
     <label class="form-label">Result <span class="text-danger">*</span></label>
     <select name="result" class="form-control" required>
         <option value="">-- Select Result --</option>
-        <option value="Passed">Passed</option>
-        <option value="Failed">Failed</option>
+        <option value="Pass">Pass</option>
+        <option value="Fail">Fail</option>
+        <option value="Conditional Pass">Conditional Pass</option>
+        
     </select>
 </div>
 

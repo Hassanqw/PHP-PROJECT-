@@ -23,31 +23,37 @@ include("components/header.php");
 
     <table class="table table-bordered">
         <thead>
+    <tr>
+        <th>#</th>
+        <th>Product ID</th>
+        <th>Product Name</th>
+        <th>Tester Name</th>
+        <th>Department Name</th>
+        <th>Type</th>
+        <th>Manufacture Date</th>
+    </tr>
+</thead>
+     <tbody>
+
+    <?php if (!empty($allProducts)): ?>
+        <?php $count = 1; ?>
+        <?php foreach ($allProducts as $product): ?>
             <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Manufacture Date</th>
+                <td><?= $count++ ?></td>
+                <td><?= htmlspecialchars($product['product_id']) ?></td>
+                <td><?= htmlspecialchars($product['product_name']) ?></td>
+                <td><?= htmlspecialchars($product['tester_name'] ?? 'N/A') ?></td>
+                <td><?= htmlspecialchars($product['department_name'] ?? 'N/A') ?></td>
+                <td><?= htmlspecialchars($product['type_name'] ?? 'N/A') ?></td>
+                <td><?= htmlspecialchars($product['manufacture_date']) ?></td>
             </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($allProducts)): ?>
-                <?php foreach ($allProducts as $product): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($product['product_id']) ?></td>
-                        <td><?= htmlspecialchars($product['product_name']) ?></td>
-                        <td><?= htmlspecialchars($product['type_name']) ?></td>
-                        <td><?= htmlspecialchars($product['status']) ?></td>
-                        <td><?= htmlspecialchars($product['manufacture_date']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5">No records found.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="6">No records found.</td>
+        </tr>
+    <?php endif; ?>
+</tbody>
     </table>
 </div>
 

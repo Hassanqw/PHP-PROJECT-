@@ -1,7 +1,9 @@
 <?php
-include("php/query.php");
+include("php/query.php"); 
 include("components/header.php");
+
 ?>
+
 
 <style>
 .container {

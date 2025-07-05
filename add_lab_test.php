@@ -74,7 +74,7 @@ include("components/header.php");
 
                 <!-- Test Date -->
                 <label>Test Date</label>
-                <input type="date" name="test_date" class="form-control"  m="<?= date('Y-m-d'); ?>" Required>
+                <input type="date" name="test_date" class="form-control"  min="<?= date('Y-m-d'); ?>" Required>
 
                 <!-- Test Start Time -->
                 <label>Test Start Time</label>
