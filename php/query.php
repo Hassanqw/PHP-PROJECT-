@@ -268,16 +268,18 @@ $passedProducts = $pdo->query("
     SELECT p.product_id, p.product_name
     FROM products p
     WHERE 
-        (
-            p.product_id IN (SELECT product_id FROM lab_test WHERE LOWER(result) = 'pass')
-            OR
-            p.product_id IN (
-                SELECT re_product_id FROM `re-manufacture`
-                WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
+        p.product_id IN (
+            SELECT product_id FROM lab_test
+            WHERE test_id IN (
+                SELECT MAX(test_id) FROM lab_test GROUP BY product_id
             )
+            AND LOWER(result) = 'pass'
         )
-        AND p.product_id NOT IN (SELECT product_id FROM cpri_tests)
+        AND p.product_id NOT IN (
+            SELECT product_id FROM cpri_tests
+        )
 ")->fetchAll(PDO::FETCH_ASSOC);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_cpri_test'])) {
     $product_id           = trim($_POST['product_id'] ?? '');
