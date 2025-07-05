@@ -120,6 +120,18 @@
 .app-container.closed-sidebar ~ .app-main {
   margin-left: 80px;
 }
+.h1 {
+
+    margin-left: 2px;
+    margin-bottom: 17px;
+}
+
+.h6 {
+
+    margin-top: 38px;
+    margin-right: 30px;
+    position: absolute;
+}
 
     </style>
 </head>
@@ -128,7 +140,7 @@
     <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
         <div class="app-header header-shadow">
             <div class="app-header__logo">
-                <div class="logo-src"></div>
+                  <h1 class="h1"><i> SRS </i></h1><h6 class="h6"><i>Managment System</i></h6>
                 <div class="header__pane ml-auto">
                     <div>
                         <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
