@@ -10,6 +10,10 @@ include("components/header.php");
         width: 700px;
         margin-top: 150px; 
     }
+    #btn1{
+        width: 670px;
+    }
+   
 </style>
 
 <div class="container">
@@ -112,7 +116,7 @@ include("components/header.php");
                 <input type="hidden" name="updated_at" value="<?= date('Y-m-d H:i:s') ?>">
                 <input type="hidden" name="labTest" value="1"> 
                 <br>
-                <button type="submit" name="labTest" class="btn btn-primary">Submit Lab Test</button>
+                <button type="submit" name="labTest" id= "btn1" class="btn btn-primary">Submit Lab Test</button>
             </form>
         </div>
     </div>

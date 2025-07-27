@@ -21,7 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Re-Submit'])) {
                 (re_product_id, Tested_by, Department, remarks, created_at, updated_at)
                 VALUES (?, ?, ?, 're-manufactured manually.', NOW(), NOW())");
             $stmt->execute([$product_id, $tester_id, $department_id]);
-            echo "<script>alert('✅ Re-manufacture record added!'); window.location.href='re_manufacture.php';</script>";
+            $query = $pdo->prepare('update cpri_tests set result = "Pass" , certification_status = "Certified" where product_id = :pId ');
+            $query->bindParam('pId',$product_id);
+            $query->execute();
+            echo "<script>alert(' Re-manufacture record added!'); window.location.href='re_manufacture.php';</script>";
             exit;
         } catch (PDOException $e) {
             $errors[] = "Database Error: " . $e->getMessage();
@@ -29,23 +32,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['Re-Submit'])) {
     }
 }
 
-// ✅ Get all failed products (lab or CPRI)
-$failedLab = $pdo->query("SELECT DISTINCT product_id FROM lab_test WHERE LOWER(result) = 'Fail'")->fetchAll(PDO::FETCH_COLUMN);
-$failedCPRI = $pdo->query("SELECT DISTINCT product_id FROM cpri_tests WHERE LOWER(result) = 'Fail'")->fetchAll(PDO::FETCH_COLUMN);
+
+$failedLab = $pdo->query("
+    SELECT lt.product_id
+    FROM (
+        SELECT product_id, MAX(test_id) AS last_id
+        FROM lab_test
+        GROUP BY product_id
+    ) last
+    JOIN lab_test lt ON lt.test_id = last.last_id
+    WHERE LOWER(lt.result) = 'fail'
+")->fetchAll(PDO::FETCH_COLUMN);
+
+
+$failedCPRI = $pdo->query("
+    SELECT ct.product_id
+    FROM (
+        SELECT product_id, MAX(cpri_test_id) AS last_id
+        FROM cpri_tests
+        GROUP BY product_id
+    ) last
+    JOIN cpri_tests ct ON ct.cpri_test_id = last.last_id
+    WHERE LOWER(ct.result) = 'fail'
+")->fetchAll(PDO::FETCH_COLUMN);
+
+
 $failed = array_unique(array_merge($failedLab, $failedCPRI));
 
-// ✅ Exclude already retested
 $alreadyRetested = $pdo->query("
-    SELECT DISTINCT re_product_id FROM `re-manufacture`
+    SELECT re_product_id
+    FROM `re-manufacture`
     WHERE Tested_by IS NOT NULL AND Department IS NOT NULL
 ")->fetchAll(PDO::FETCH_COLUMN);
 
-// ✅ Get eligible products
+
 $allProducts = $pdo->query("SELECT * FROM products")->fetchAll(PDO::FETCH_ASSOC);
 $reTestProducts = array_filter($allProducts, function ($p) use ($failed, $alreadyRetested) {
     return in_array($p['product_id'], $failed) && !in_array($p['product_id'], $alreadyRetested);
 });
-
 
 
 
@@ -56,6 +80,7 @@ $reTestProducts = array_filter($allProducts, function ($p) use ($failed, $alread
     .container{
         width: 700px;
         margin-top: 150px; 
+        
     }
 label {
     font-weight: bold;
@@ -68,14 +93,12 @@ label {
     margin-top: 5px;
     margin-bottom: 15px;
 }
-.btn-primary {
-    padding: 10px 20px;
-    font-size: 16px;
+#btn4 {
+   width: 670px;
 }
 </style>
 
 <div class="container">
-
     <div class="app-main__outer">
     <div class="app-main__inner">
         <div class="app-page-title">
@@ -142,7 +165,7 @@ label {
     </select>
 
     <br>
-    <button type="submit" name="Re-Submit" class="btn btn-primary">Submit</button>
+    <button type="submit" name="Re-Submit" id="btn4" class="btn btn-primary">Submit</button>
 </form>
 
 

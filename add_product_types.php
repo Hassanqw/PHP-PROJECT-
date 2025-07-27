@@ -9,6 +9,9 @@ include("components/header.php");
         width: 700px;
         margin-top: 150px; 
     }
+    #btn3{
+        width: 670px;
+    }
 </style>
 
 <div class="container">
@@ -29,19 +32,14 @@ include("components/header.php");
         </div>
 
         <?php echo $message; ?>
-
-        <div class="main-card mb-3 card">
-            <div class="card-body">
                 <form method="post" action="">
                     <div class="position-relative form-group">
                         <label for="type_name" class="">Product Type Name</label>
                         <input name="type_name" id="type_name" placeholder="e.g. Capacitor" type="text" class="form-control" required>
                     </div>
-                    <button type="submit" name="addproductType" class="mt-2 btn btn-primary">Add Product Type</button>
+                    <button type="submit" name="addproductType" id="btn3" class="mt-2 btn btn-primary">Add Product Type</button>
                 </form>
             </div>
-        </div>
-    </div>
 </div>
 </div>
 </div>

@@ -15,14 +15,18 @@
 <link href="main.d810cf0ae7f39f28f336.css" rel="stylesheet">
 <style>
         .sidebar {
-            background-color: #1a202c;
-            color: #e2e8f0;
-            height: 100vh;
-            width: 250px;
-            transition: width 0.3s ease;
-            position: fixed;
-            overflow-y: auto;
-        }
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); /* Smooth dark gradient */
+    color: #e2e8f0;
+    height: 100vh;
+    width: 250px;
+    transition: width 0.3s ease;
+    position: fixed;
+    overflow-y: auto;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5); /* Attractive shadow */
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
         .sidebar.collapsed {
             width: 80px;
         }
@@ -41,6 +45,7 @@
             color: #e2e8f0;
             padding: 10px;
             cursor: pointer;
+             transition: transform 0.3s ease;
         }
         .sidebar .vertical-nav-menu {
             list-style: none;
@@ -107,7 +112,6 @@
   z-index: 99;
 }
 
-/* Adjust content area based on fixed elements */
 .fixed-header ~ .app-main {
   padding-top: [header-height];
 }
@@ -1336,10 +1340,10 @@ if (isset($_SESSION['adminEmail'])) {
                         </a>
                     </li>
                      <li>
-                        <a href="index.php">
+                        <!-- <a href="index.php">
                             <i class="metismenu-icon fas fa-sign-in-alt"></i>
                             <span class="sidebar-text">Login</span>
-                        </a>
+                        </a> -->
                 </ul>
             </div>
         </div>

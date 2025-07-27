@@ -40,13 +40,14 @@ include("components/header.php");
     <form method="POST" enctype="multipart/form-data">
         
 <select name="product_id" class="form-control">
-    <option value="">-- Select Product --</option>
-    <?php foreach ($passedProducts as $product): ?>
+    <option value="">Select Product</option>
+    <?php foreach ($productsForCPRI as $product): ?>
         <option value="<?= htmlspecialchars($product['product_id']) ?>">
             <?= htmlspecialchars($product['product_name']) ?>
         </option>
     <?php endforeach; ?>
 </select>
+
 
       
 
@@ -87,7 +88,7 @@ include("components/header.php");
         <option value="">-- Select Result --</option>
         <option value="Pass">Pass</option>
         <option value="Fail">Fail</option>
-        <option value="Conditional Pass">Conditional Pass</option>
+        
         
     </select>
 </div>
@@ -99,7 +100,7 @@ include("components/header.php");
         <option value="">-- Select Status --</option>
         <option value="Certified">Certified</option>
         <option value="Rejected">Rejected</option>
-        <option value="Pending">Pending</option>
+   
     </select>
 </div>
 

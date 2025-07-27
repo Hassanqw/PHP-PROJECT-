@@ -60,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
     <meta name="description" content="ArchitectUI HTML Bootstrap 4 Dashboard Template">
 
-    <!-- Disable tap highlight on IE -->
     <meta name="msapplication-tap-highlight" content="no">
 
 <link href="main.d810cf0ae7f39f28f336.css" rel="stylesheet"></head>
@@ -78,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="slide-img-bg" style="background-image: url('assets/images/originals/city.jpg');"></div>
                                         <div class="slider-content">
                                             <h3>Perfect Balance</h3>
-                                            <p>ArchitectUI is like a dream. Some think it's too good to be true! Extensive
+                                            <p>Some think it's too good to be true! Extensive
                                                 collection of unified React Boostrap Components and Elements.
                                             </p>
                                         </div>
@@ -157,5 +156,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script type="text/javascript" src="assets/scripts/main.d810cf0ae7f39f28f336.js"></script></body>
 
 
-<!-- Mirrored from demo.dashboardpack.com/architectui-html-pro/pages-login.html  [XR&CO'2014], Fri, 20 Jun 2025 06:57:47 GMT -->
+
 </html>

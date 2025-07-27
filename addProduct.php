@@ -8,7 +8,6 @@ include("components/header.php");
 
     .container{
         width: 600px;
-        font: 1em sans-serif;
         margin-top: 150px; 
     }
 </style>
@@ -34,14 +33,14 @@ include("components/header.php");
         <!-- Product Name -->
         <div class="mb-3">
             <label for="productName" class="form-label fw-bold">Product Name</label>
-            <input type="text" class="form-control form-control-lg" id="productName" name="product_name" placeholder="Enter product Name" value="<?php echo htmlspecialchars($product_name); ?>">
+            <input type="text" class="form-control form-control" id="productName" name="product_name" placeholder="Enter product Name" value="<?php echo htmlspecialchars($product_name); ?>">
             <small class="text-danger"><?php echo $productNameErr ?? ''; ?></small>
         </div>
 
         <!-- Product Type -->
         <div class="mb-3">
             <label for="productType" class="form-label fw-bold">Product Type</label>
-            <select name="product_type_id" id="productType" class="form-control form-control-lg">
+            <select name="product_type_id" id="productType" class="form-control form-control">
                 <option value="">Select Product Type</option>
                 <?php
                 $query = $pdo->query("SELECT product_type_id, type_name FROM product_types");
@@ -55,27 +54,24 @@ include("components/header.php");
             <small class="text-danger"><?php echo $productTypeIdErr ?? ''; ?></small>
         </div>
 
-        <!-- Revise Code (Read-only display + Hidden input) -->
+
         <div class="mb-3">
-            <input type="hidden" class="form-control form-control-lg" id="reviseCode" value="<?php echo htmlspecialchars($revise_code); ?>" readonly>
+            <input type="hidden" class="form-control form-control" id="reviseCode" value="<?php echo htmlspecialchars($revise_code); ?>" readonly>
             <input type="hidden" name="revise_code" value="<?php echo htmlspecialchars($revise_code); ?>">
         </div>
 
-        <!-- Manufacture No (Read-only display + Hidden input) -->
         <div class="mb-3">
-            <input type="hidden" class="form-control form-control-lg" id="manufactureNo" value="<?php echo htmlspecialchars($manufacture_no); ?>" readonly>
+            <input type="hidden" class="form-control form-control" id="manufactureNo" value="<?php echo htmlspecialchars($manufacture_no); ?>" readonly>
             <input type="hidden" name="manufacture_no" value="<?php echo htmlspecialchars($manufacture_no); ?>">
         </div>
 
-        <!-- Manufacture Date -->
+   
         <div class="mb-3">
             <label for="manufactureDate" class="form-label fw-bold">Manufacture Date</label>
-            <input type="date" class="form-control form-control-lg" id="manufactureDate" name="manufacture_date" min="<?= date('Y-m-d'); ?>" value="<?php echo htmlspecialchars($manufacture_date); ?>required>
+            <input type="date" class="form-control form-control" id="manufactureDate" name="manufacture_date" min="<?= date('Y-m-d'); ?>" value="<?php echo htmlspecialchars($manufacture_date); ?>required>
             <small class="text-danger"><?php echo $manufactureDateErr ?? ''; ?></small>
         </div>
-
-        <!-- Submit Button -->
-        <button name="addproduct" class="btn btn-primary btn-lg w-100">Add Product</button>
+        <button name="addproduct" class="btn btn-primary btn w-100">Add Product</button>
     </form>
 </div>
 

@@ -9,6 +9,9 @@ include("components/header.php");
         width: 700px;
         margin-top: 150px; 
     }
+    #btn2{
+        background-color: #3f6ad8;
+    }
 </style>
 
 <div class="container">
@@ -41,7 +44,7 @@ include("components/header.php");
             <input type="text" class="form-control" id="location" name="location" placeholder="Enter department location">
         </div>
 
-        <button type="submit" name="addDepartment" class="btn btn-success w-100">Add Department</button>
+        <button type="submit" name="addDepartment" id="btn2" class="btn btn-success w-100">Add Department</button>
     </form>
 </div>
 <?php include("components/footer.php"); ?>
