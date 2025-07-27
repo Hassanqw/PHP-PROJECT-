@@ -183,10 +183,7 @@
                     </div>
                     <ul class="header-megamenu nav">
                         <li class="nav-item">
-                            <a href="javascript:void(0);" data-placement="bottom" rel="popover-focus" data-offset="300" data-toggle="popover-custom" class="nav-link">
-                                <i class="nav-link-icon pe-7s-gift"> </i> Mega Menu
-                                <i class="fa fa-angle-down ml-2 opacity-5"></i>
-                            </a>
+                          
                             <div class="rm-max-width">
                                 <div class="d-none popover-custom-content">
                                     <div class="dropdown-mega-menu">
@@ -267,17 +264,13 @@
                             </div>
                         </li>
                         <li class="btn-group nav-item">
-                            <a class="nav-link" data-toggle="dropdown" aria-expanded="false">
-                                <span class="badge badge-pill badge-danger ml-0 mr-2">4</span> Settings
-                                <i class="fa fa-angle-down ml-2 opacity-5"></i>
-                            </a>
+                         
                             <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu">
                                 <div class="dropdown-menu-header">
                                     <div class="dropdown-menu-header-inner bg-secondary">
                                         <div class="menu-header-image opacity-5" style="background-image: url('assets/images/dropdown-header/abstract2.jpg');"></div>
                                         <div class="menu-header-content">
-                                            <h5 class="menu-header-title">Overview</h5>
-                                            <h6 class="menu-header-subtitle">Dropdown menus for everyone</h6>
+                                         
                                         </div>
                                     </div>
                                 </div>
@@ -301,10 +294,7 @@
                             </div>
                         </li>
                         <li class="dropdown nav-item">
-                            <a aria-haspopup="true" data-toggle="dropdown" class="nav-link" aria-expanded="false">
-                                <i class="nav-link-icon pe-7s-settings"></i> Projects
-                                <i class="fa fa-angle-down ml-2 opacity-5"></i>
-                            </a>
+                          
                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu-lg rm-pointers dropdown-menu">
                                 <div class="dropdown-menu-header">
                                     <div class="dropdown-menu-header-inner bg-success">
@@ -345,9 +335,8 @@
                         <div class="dropdown">
                             <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="p-0 mr-2 btn btn-link">
                                 <span class="icon-wrapper icon-wrapper-alt rounded-circle">
-                                    <span class="icon-wrapper-bg bg-primary"></span>
-                                    <i class="icon text-primary ion-android-apps"></i>
-                                </span>
+                                   
+                              
                             </button>
                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-xl rm-pointers dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-menu-header">
@@ -355,7 +344,7 @@
                                         <div class="menu-header-image" style="background-image: url('assets/images/dropdown-header/abstract4.jpg');"></div>
                                         <div class="menu-header-content text-white">
                                             <h5 class="menu-header-title">Grid Dashboard</h5>
-                                            <h6 class="menu-header-subtitle">Easy grid navigation inside dropdowns</h6>
+                                            <h6 class="menu-header-subtitle">Easy grid navigation inside dropdowns</h6>icon text-primary ion-android-apps
                                         </div>
                                     </div>
                                 </div>
@@ -404,11 +393,7 @@
                         <div class="dropdown">
                             <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"
                                 class="p-0 mr-2 btn btn-link">
-                                <span class="icon-wrapper icon-wrapper-alt rounded-circle">
-                                    <span class="icon-wrapper-bg bg-danger"></span>
-                                    <i class="icon text-danger icon-anim-pulse ion-android-notifications"></i>
-                                    <span class="badge badge-dot badge-dot-sm badge-danger">Notifications</span>
-                                </span>
+                            
                             </button>
                             <div tabindex="-1" role="menu" aria-hidden="true"
                                 class="dropdown-menu-xl rm-pointers dropdown-menu dropdown-menu-right">
@@ -722,10 +707,7 @@
                         </div>
                         <div class="dropdown">
                             <button type="button" data-toggle="dropdown" class="p-0 mr-2 btn btn-link">
-                                <span class="icon-wrapper icon-wrapper-alt rounded-circle">
-                                    <span class="icon-wrapper-bg bg-focus"></span>
-                                    <span class="language-icon opacity-8 flag large DE"></span>
-                                </span>
+                                
                             </button>
                             <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-menu-header">
@@ -761,10 +743,7 @@
                         </div>
                         <div class="dropdown">
                             <button type="button" aria-haspopup="true" data-toggle="dropdown" aria-expanded="false" class="p-0 btn btn-link dd-chart-btn">
-                                <span class="icon-wrapper icon-wrapper-alt rounded-circle">
-                                    <span class="icon-wrapper-bg bg-success"></span>
-                                    <i class="icon text-success ion-ios-analytics"></i>
-                                </span>
+                                
                             </button>
                             <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-xl rm-pointers dropdown-menu dropdown-menu-right">
                                 <div class="dropdown-menu-header">
@@ -776,6 +755,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                
                                 <div class="widget-chart">
                                     <div class="widget-chart-content">
                                         <div class="icon-wrapper rounded-circle">
@@ -815,7 +796,21 @@
                                 <div class="widget-content-left">
                                     <div class="btn-group">
                                         <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
-                                            <img width="42" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
+                                       <?php
+$userInitial = 'U'; // Default letter
+
+if (isset($_SESSION['adminEmail'])) {
+    $userInitial = strtoupper(substr($_SESSION['adminEmail'], 0, 1));
+} elseif (isset($_SESSION['userEmail'])) {
+    $userInitial = strtoupper(substr($_SESSION['userEmail'], 0, 1));
+}
+?>
+
+<div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center"
+     style="width: 42px; height: 42px; font-size: 20px; font-weight: bold;">
+    <?= $userInitial ?>
+</div>
+
                                             <i class="fa fa-angle-down ml-2 opacity-8"></i>
                                         </a>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu-lg dropdown-menu dropdown-menu-right">
@@ -826,7 +821,26 @@
                                                         <div class="widget-content p-0">
                                                             <div class="widget-content-wrapper">
                                                                 <div class="widget-content-left mr-3">
-                                                                    <img width="42" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
+                                                               
+                                                                <?php
+$userInitial = 'U'; // Default initial
+
+if (isset($_SESSION['adminEmail'])) {
+    $userInitial = strtoupper(substr($_SESSION['adminEmail'], 0, 1));
+} elseif (isset($_SESSION['userEmail'])) {
+    $userInitial = strtoupper(substr($_SESSION['userEmail'], 0, 1));
+}
+?>
+
+<div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center" 
+     style="width: 42px; height: 42px; font-size: 20px; font-weight: bold;">
+    <?= $userInitial ?>
+</div>
+
+
+
+                                                                
+
                                                                 </div>
                                                                 <div class="widget-content-left">
                                                                   <div class="widget-heading">
